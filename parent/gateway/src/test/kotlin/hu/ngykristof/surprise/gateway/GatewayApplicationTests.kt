@@ -1,10 +1,10 @@
-package hu.ngykristof.surprise.parent
+package hu.ngykristof.surprise.gateway
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
-class ParentApplicationTests {
+class GatewayApplicationTests {
 
 	@Test
 	fun contextLoads() {

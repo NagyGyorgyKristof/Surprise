@@ -1,0 +1,14 @@
+language: java
+jdk: oraclejdk11
+sudo: false
+
+script:
+  - cd parent
+  - ./mvnw clean package -DskipTests=true
+  - cd ..
+
+notifications:
+  email:
+    recipients:
+      - nagygyorgykristof@gmail.com
+    on_failure: always

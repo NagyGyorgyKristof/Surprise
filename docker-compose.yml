@@ -1,0 +1,19 @@
+version: '3'
+services:
+  database:
+    image: mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    container_name: surprise-v1-sql
+    volumes:
+      - surprise-v1-mysql:/var/lib/mysql
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_DATABASE: "surprise"
+      MYSQL_USER: "example_user"
+      MYSQL_PASSWORD: "root"
+volumes:
+  surprise-v1-mysql:
+

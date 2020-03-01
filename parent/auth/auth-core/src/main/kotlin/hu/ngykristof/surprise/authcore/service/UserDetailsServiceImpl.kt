@@ -1,6 +1,6 @@
 package hu.ngykristof.surprise.authcore.service
 
-import hu.ngykristof.surprise.authcore.config.JwtConfig
+import hu.ngykristof.surprise.commonscore.config.jwt.JwtConfig
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails

@@ -3,7 +3,7 @@ package hu.ngykristof.surprise.authcore.security
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.fasterxml.jackson.databind.ObjectMapper
-import hu.ngykristof.surprise.authcore.config.JwtConfig
+import hu.ngykristof.surprise.commonscore.config.jwt.JwtConfig
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -43,7 +43,7 @@ class JwtAuthenticationFilter(
                 .withExpiresAt(Date(System.currentTimeMillis() + jwtConfig.expiration.toInt()))
                 .sign(Algorithm.HMAC512(jwtConfig.secret.toByteArray()))
 
-        response.addHeader(jwtConfig.header, "${jwtConfig.prefix} $token")
+        response.addHeader(jwtConfig.header, "${jwtConfig.tokenPrefix}$token")
     }
 
     data class UserCredentials(

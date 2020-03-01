@@ -1,7 +1,7 @@
 package hu.ngykristof.surprise.authcore.security
 
-import hu.ngykristof.surprise.authcore.config.JwtConfig
 import hu.ngykristof.surprise.authcore.service.UserDetailsServiceImpl
+import hu.ngykristof.surprise.commonscore.config.jwt.JwtConfig
 import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity

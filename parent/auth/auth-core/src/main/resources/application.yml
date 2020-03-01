@@ -16,9 +16,9 @@ eureka:
 surprise:
   auth:
     jwt:
-      uri: /auth/**
+      uri: /login
       header: Authorization
-      prefix: Bearer
+      tokenPrefix: "Bearer "
       expiration: 86400
       secret: lrTnWakwCNZlDo0i5l5xkngtQMN0zMle4PJpyl1cHkh8qXbKUblayqB7w2WfARi
       rolePrefix: ROLE_

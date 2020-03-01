@@ -37,6 +37,7 @@
         <module>service-discovery</module>
         <module>gateway</module>
         <module>auth</module>
+        <module>common/commons-core</module>
     </modules>
 
     <dependencyManagement>

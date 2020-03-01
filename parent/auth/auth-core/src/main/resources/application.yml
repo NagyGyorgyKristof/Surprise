@@ -5,17 +5,26 @@ server:
 
 spring:
   application:
-    name: authservice
-  datasource:
-    url: jdbc:mysql://localhost:3306/surprise?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true
-    username: example_user
-    password: root
-    driver-class-name: com.mysql.cj.jdbc.Driver
-  jpa:
-    hibernate:
-      ddl-auto: update
+    name: auth-service
 
 eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
+
+
+surprise:
+  auth:
+    jwt:
+      uri: /auth/**
+      header: Authorization
+      prefix: Bearer
+      expiration: 86400
+      secret: lrTnWakwCNZlDo0i5l5xkngtQMN0zMle4PJpyl1cHkh8qXbKUblayqB7w2WfARi
+      rolePrefix: ROLE_
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    com.netflix.: info
+    org.apache.http: info

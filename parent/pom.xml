@@ -28,9 +28,6 @@
         <org.projectlombok.version>1.18.4</org.projectlombok.version>
         <javax-validation.version>2.0.1.Final</javax-validation.version>
         <hibernate-validator.version>6.1.1.Final</hibernate-validator.version>
-        <jjwt-api.version>0.10.7</jjwt-api.version>
-        <jjwt-impl.version>0.10.7</jjwt-impl.version>
-        <jjwt-jackson.version>0.10.7</jjwt-jackson.version>
         <feign-httpclient>10.7.0</feign-httpclient>
         <commons.version>1.0.0-SNAPSHOT</commons.version>
         <iban4j.version>3.2.1</iban4j.version>

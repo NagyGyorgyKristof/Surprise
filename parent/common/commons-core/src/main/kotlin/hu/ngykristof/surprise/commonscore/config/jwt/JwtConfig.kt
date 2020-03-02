@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component
 @Component
 @ConfigurationProperties("surprise.auth.jwt")
 open class JwtConfig {
-    lateinit var uri: String
     lateinit var header: String
     lateinit var tokenPrefix: String
     lateinit var expiration: String

@@ -16,7 +16,6 @@ eureka:
 surprise:
   auth:
     jwt:
-      uri: /login
       header: Authorization
       tokenPrefix: "Bearer "
       expiration: 86400

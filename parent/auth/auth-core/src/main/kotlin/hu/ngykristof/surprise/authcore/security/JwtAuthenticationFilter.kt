@@ -9,7 +9,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 import java.util.*
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
@@ -19,11 +18,6 @@ class JwtAuthenticationFilter(
         private val authManager: AuthenticationManager,
         private val jwtConfig: JwtConfig
 ) : UsernamePasswordAuthenticationFilter() {
-
-    init {
-        this.setRequiresAuthenticationRequestMatcher(AntPathRequestMatcher(jwtConfig.uri, "POST"))
-    }
-
     override fun attemptAuthentication(request: HttpServletRequest, response: HttpServletResponse): Authentication {
         val user = ObjectMapper().readValue(request.inputStream, UserCredentials::class.java)
 

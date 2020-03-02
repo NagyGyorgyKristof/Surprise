@@ -2,7 +2,6 @@ package hu.ngykristof.surprise.authcore.security
 
 import hu.ngykristof.surprise.authcore.service.UserDetailsServiceImpl
 import hu.ngykristof.surprise.commonscore.config.jwt.JwtConfig
-import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -24,12 +23,10 @@ class AuthWebSecurity(
                 .and()
                 .addFilter(JwtAuthenticationFilter(authenticationManager(), jwtConfig))
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, jwtConfig.uri).permitAll()
                 .anyRequest().permitAll()
     }
 
     override fun configure(auth: AuthenticationManagerBuilder) {
         auth.userDetailsService(userDetailsServiceImpl).passwordEncoder(passwordEncoder)
     }
-
 }

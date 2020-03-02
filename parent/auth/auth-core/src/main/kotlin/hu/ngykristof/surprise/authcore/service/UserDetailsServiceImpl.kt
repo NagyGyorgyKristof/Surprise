@@ -30,7 +30,9 @@ class UserDetailsServiceImpl(
         for (appUser in users) {
             if (appUser.userName == username) {
                 val grantedAuthorities = AuthorityUtils
-                        .commaSeparatedStringToAuthorityList(jwtConfig.rolePrefix + appUser.role)
+                        .commaSeparatedStringToAuthorityList(
+                                jwtConfig.rolePrefix + appUser.role.toUpperCase()
+                        )
                 return User(appUser.userName, appUser.password, grantedAuthorities)
             }
         }
@@ -44,7 +46,6 @@ class UserDetailsServiceImpl(
             val userName: String,
             val password: String,
             val role: String
-
     )
 }
 

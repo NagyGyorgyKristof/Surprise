@@ -16,6 +16,7 @@ class TokenService(
 
     fun validateToken(validateTokenRequest: ValidateTokenRequest): ValidateTokenResponse {
         return try {
+            //Throw an JWTDecodeException exception if the token is not formatted or it has been expired
             JWT.require(Algorithm.HMAC512(jwtConfig.secret.toByteArray()))
                     .build()
                     .verify(validateTokenRequest

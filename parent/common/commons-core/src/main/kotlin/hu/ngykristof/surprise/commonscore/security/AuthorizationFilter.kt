@@ -28,9 +28,9 @@ class AuthorizationFilter(
     }
 
     private fun getAuthentication(request: HttpServletRequest): UsernamePasswordAuthenticationToken? {
-        val token = request.getHeader(jwtConfig.header)
+        val token: String? = request.getHeader(jwtConfig.header)
 
-        if (token != null) {
+        token?.let {
             val jwt = JWT
                     .require(Algorithm.HMAC512(jwtConfig.secret.toByteArray()))
                     .build()
@@ -40,14 +40,11 @@ class AuthorizationFilter(
             val roles = jwt.claims["roles"]?.asArray(String::class.java)
             val authorities = roles?.map { SimpleGrantedAuthority(it) } ?: emptyList()
 
-            if (username != null) {
+            username?.let {
                 return UsernamePasswordAuthenticationToken(username, null, authorities)
             }
-
-            return null
         }
-
         return null
     }
-
 }
+

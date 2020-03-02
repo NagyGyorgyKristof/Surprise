@@ -14,7 +14,6 @@
     <name>auth</name>
     <description>AuthService</description>
 
-
     <modules>
         <module>auth-core</module>
         <module>auth-api</module>

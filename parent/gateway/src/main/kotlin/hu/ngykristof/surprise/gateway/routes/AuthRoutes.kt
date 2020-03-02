@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 class AuthRoutes {
 
-
     @Bean
     fun authRouteLocator(builder: RouteLocatorBuilder) = builder.routes {
         route(id = "auth-service") {

@@ -13,7 +13,6 @@
     <name>commons-core</name>
     <description>Common module.</description>
 
-
     <dependencies>
         <dependency>
             <groupId>com.auth0</groupId>

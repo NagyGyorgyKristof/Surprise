@@ -1,6 +1,6 @@
 package hu.ngykristof.surprise.commonscore.security
 
-import hu.ngykristof.surprise.commonscore.config.jwt.JwtConfig
+import hu.ngykristof.surprise.commomconfig.config.jwt.JwtConfig
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
 import org.springframework.security.config.annotation.web.builders.HttpSecurity

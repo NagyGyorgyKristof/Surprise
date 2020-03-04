@@ -2,8 +2,8 @@ package hu.ngykristof.surprise.commonscore.interceptor
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import hu.ngykristof.surprise.commomconfig.config.jwt.JwtConfig
 import hu.ngykristof.surprise.commonscore.config.WithUserInfo
-import hu.ngykristof.surprise.commonscore.config.jwt.JwtConfig
 import hu.ngykristof.surprise.commonscore.dto.UserInfo
 import org.springframework.core.MethodParameter
 import org.springframework.web.bind.support.WebDataBinderFactory
@@ -32,8 +32,9 @@ class UserInfoHandlerMethodArgumentResolver(
                 .build()
                 .verify(token.replace(jwtConfig.tokenPrefix, ""))
 
-        val username = jwt.subject
+        val userId = jwt.subject
+        val username = jwt.getClaim("username").asString()
 
-        return UserInfo(username)
+        return UserInfo(userId, username)
     }
 }

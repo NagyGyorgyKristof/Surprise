@@ -1,6 +1,6 @@
 package hu.ngykristof.surprise.commonscore.interceptor
 
-import hu.ngykristof.surprise.commonscore.config.jwt.JwtConfig
+import hu.ngykristof.surprise.commomconfig.config.jwt.JwtConfig
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer

@@ -1,4 +1,4 @@
-package hu.ngykristof.surprise.commonscore.config.jwt
+package hu.ngykristof.surprise.commomconfig.config.jwt
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Component

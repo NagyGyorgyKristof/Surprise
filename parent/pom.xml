@@ -41,6 +41,7 @@
         <module>gateway</module>
         <module>auth</module>
         <module>common</module>
+        <module>user</module>
     </modules>
 
     <dependencyManagement>

@@ -2,7 +2,7 @@ package hu.ngykristof.surprise.commonscore.security
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import hu.ngykristof.surprise.commonscore.config.jwt.JwtConfig
+import hu.ngykristof.surprise.commomconfig.config.jwt.JwtConfig
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
@@ -30,19 +30,18 @@ class AuthorizationFilter(
     private fun getAuthentication(request: HttpServletRequest): UsernamePasswordAuthenticationToken? {
         val token: String? = request.getHeader(jwtConfig.header)
 
-        token?.let {
+        if (token != null) {
             val jwt = JWT
                     .require(Algorithm.HMAC512(jwtConfig.secret.toByteArray()))
                     .build()
                     .verify(token.replace(jwtConfig.tokenPrefix, ""))
 
-            val username = jwt.subject
+            val username = jwt.getClaim("username").asString()
             val roles = jwt.claims["roles"]?.asArray(String::class.java)
-            val authorities = roles?.map { SimpleGrantedAuthority(it) } ?: emptyList()
+            val authorities = roles?.map { SimpleGrantedAuthority(it) }
 
-            username?.let {
-                return UsernamePasswordAuthenticationToken(username, null, authorities)
-            }
+
+            return UsernamePasswordAuthenticationToken(username, null, authorities)
         }
         return null
     }

@@ -11,7 +11,7 @@ class AuthRoutes {
     @Bean
     fun authRouteLocator(builder: RouteLocatorBuilder) = builder.routes {
         route(id = "auth-service") {
-            path("/auth/**")
+            path("/auth/login")
             uri("lb://auth-service/")
         }
     }

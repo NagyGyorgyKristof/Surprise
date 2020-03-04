@@ -1,5 +1,5 @@
 package hu.ngykristof.surprise.authapi.dto.tokenvalidation
 
-data class ValidateTokenRequest(
+data class TokenValidationRequest(
         val accessToken: String = ""
 )

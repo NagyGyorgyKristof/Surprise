@@ -18,7 +18,7 @@ surprise:
     jwt:
       header: Authorization
       tokenPrefix: "Bearer "
-      expiration: 86400
+      expiration: 86400000
       secret: lrTnWakwCNZlDo0i5l5xkngtQMN0zMle4PJpyl1cHkh8qXbKUblayqB7w2WfARi
       rolePrefix: ROLE_
 

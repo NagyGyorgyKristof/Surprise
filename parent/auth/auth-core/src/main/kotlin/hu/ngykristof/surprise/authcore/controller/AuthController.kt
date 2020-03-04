@@ -1,7 +1,7 @@
 package hu.ngykristof.surprise.authcore.controller
 
-import hu.ngykristof.surprise.authapi.dto.tokenvalidation.ValidateTokenRequest
-import hu.ngykristof.surprise.authapi.dto.tokenvalidation.ValidateTokenResponse
+import hu.ngykristof.surprise.authapi.dto.tokenvalidation.TokenValidationRequest
+import hu.ngykristof.surprise.authapi.dto.tokenvalidation.TokenValidationResponse
 import hu.ngykristof.surprise.authcore.service.TokenService
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -14,7 +14,7 @@ class AuthController(
 
 
     @PostMapping("/validate")
-    fun validateToken(@RequestBody validateTokenRequest: ValidateTokenRequest): ValidateTokenResponse {
+    fun validateToken(@RequestBody validateTokenRequest: TokenValidationRequest): TokenValidationResponse {
         return tokenService.validateToken(validateTokenRequest)
     }
 }

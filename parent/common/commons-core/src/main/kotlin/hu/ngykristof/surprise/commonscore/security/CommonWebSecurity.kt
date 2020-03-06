@@ -11,6 +11,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @Configuration
 @EnableWebSecurity
 @Order(1000)
+//TODO refactor this code with kotlin DSL at 2.3.0 main version
 class CommonWebSecurity(
         private val jwtConfig: JwtConfig
 ) : WebSecurityConfigurerAdapter() {

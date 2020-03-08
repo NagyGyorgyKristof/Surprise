@@ -1,2 +1,2 @@
-create schema auth;
-create schema surprise_user;
+CREATE SCHEMA IF NOT EXISTS auth;
+CREATE SCHEMA IF NOT EXISTS surprise_user;

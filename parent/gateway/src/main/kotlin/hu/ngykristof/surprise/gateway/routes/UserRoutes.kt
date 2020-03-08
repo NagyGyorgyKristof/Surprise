@@ -1,6 +1,5 @@
 package hu.ngykristof.surprise.gateway.routes
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import hu.ngykristof.surprise.gateway.filter.AuthenticatedRequestFilter
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder
@@ -25,7 +24,7 @@ class UserRoutes(
         }
 
         route(id = "user-service-core") {
-            path("/users/details")
+            path("/users/details/**")
             filters {
                 this.filter(AuthenticatedRequestFilter(webClientBuilder, accessTokenUrl).apply(Any()))
             }

@@ -43,11 +43,9 @@ class UserService(
     fun validateUserLogin(validateUserLoginRequest: ValidateUserLoginRequest): ValidateUserLoginResponse {
         val user = userRepository
                 .findByUsername(validateUserLoginRequest.username)
-                ?: throw UserNotFoundException()
+                ?: throw WrongUsernameException()
 
-        return user
-                .isPasswordCorrect(validateUserLoginRequest.password)
-                .toValidateUserLoginResponse()
+        return user.checkPassword(validateUserLoginRequest.password).toValidateUserLoginResponse()
     }
 
     fun getUserDetails(userId: String): UserDetailsResponse {
@@ -91,7 +89,7 @@ class UserService(
         return registeredUser != null
     }
 
-    private fun UserEntity.isPasswordCorrect(password: String): UserEntity {
+    private fun UserEntity.checkPassword(password: String): UserEntity {
         if (!encoder.matches(password, this.password)) {
             throw WrongPasswordException()
         }

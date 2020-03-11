@@ -14,6 +14,18 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: randomkris96@gmail.com
+    password: 52sXBJzwKTZrKj7
+    protocol: smtp
+    properties.mail.smtp:
+      auth: true
+      starttls.enable: true
+      debug: true
+  messages:
+    basename: i18n/messages
 
 eureka:
   client:
@@ -29,9 +41,15 @@ surprise:
       expiration: 86400000
       secret: lrTnWakwCNZlDo0i5l5xkngtQMN0zMle4PJpyl1cHkh8qXbKUblayqB7w2WfARi
       rolePrefix: ROLE_
+  mail:
+    base-url: http://127.0.0.1:8080
 
 logging:
   level:
     org.springframework.security: DEBUG
     com.netflix.: info
     org.apache.http: info
+
+
+
+

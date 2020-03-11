@@ -1,14 +1,19 @@
 language: java
 jdk: oraclejdk11
 sudo: false
-
 script:
-  - cd parent
-  - ./mvnw clean package -DskipTests=true
-  - cd ..
+- cd parent
+- "./mvnw -q clean package -DskipTests=true"
+- cd ..
+- sonar-scanner
 
 notifications:
-  email:
-    recipients:
-      - nagygyorgykristof@gmail.com
-    on_failure: always
+  email: false
+  slack:
+    secure: n0UwQHvJZ9oJVsQw7xwOg/qvxg8DeWG0qkmSP5lnSCyopFzqiEl67jQVdB5ZGm7QuWXBtiSQ+Cu5R/NEJ88U4HwhAb8GVLUSuTVR1Zgdnpe2Lp4IofcEGVcsokivRUlxKY1kF4mflSXcAWCQ/PDVLF7VYx8diY0r/LH77sUweCM+m8w5OsoEo3Fo8A0d7i/+pkfzUUSm+JAQHREz/xo4nLsBivEFY1i9+3ptFnvBNkI59WXXxWEROEvD66sMhJl+TW+ZdXozcrHmqbObqDH/452vJ7bJsEDSOPnOgMKGyqBYTJCG6c6hdk0sxz8qFdo/rThDbakU5BXjXgfAYJ+24RFgk5jpwmNMLFKgq3RdSoYNSrQbIUQTtAuQgGwUaHmpB5liX0WyCnI0h76sEgMlkNM2M9PsP+ZgnCj9fSewS5aU/dkI4TxlukNkVcWype6/ISUwCJCj1asNhko0/euoWkroOXlXs2FxqpuVTCH7y9b5s6Pf1s6p3v191mooYMPAPwFxIyVpukj7nkUCDhSQq4RP7e9uNKuksgNEVSO+FS5txQXxJebhX7pCjp7MNTw+xnKcvWHGEdbCyoaMej80QSdIdvxS4SFrkdj7EdoudVhrDYs4rQT69PYOp5OI9IHwJkqQk7faexT6+NZAsNcRUbwLovJPxvsGNzxgz0EsOW0=
+
+addons:
+  sonarcloud:
+    organization: "ngy"
+    token:
+      secure: 4EZQiefAkSqieKCV2UKNmDzx7VHk4rSXoAzUHjV398jJTM7/pocGTiD4Pbs8jSlGtDaCdsMy0tHjjGVrflYPtuRQz8uTxXhwdpyj+LlFrdZjhCLSHAI5JqGfR0+juILhwxg4pzZ/WvFAEIYasAkHLELx6EPyRLHKMzCZuVOaOnJ25p3c/qks10g3thU+CVyTLaaQJBdf7Ls8CPG4tZZCulh7B6Jx3zLWUtzbPATtNODJ6MX5CWwJ+dOzHQbm/5TRcueDbGZqglVsArtENMJgaVvitUihlDzLmwaP5H5UWaFD987Ox4leYKCuYRMl6G/y0tkICHrjdVaJSpGLxumQ//a24TAsyzcrQRzYtAph9b6kSpLM4sZJlsenmU86BhgnwJ8HcEzmJDY5WfBTGFwzO9/cSLqDdOmwepT90MHYhqydr1+DjQGdhT5QNdTOOGyG6IgeehIl3DGgWKiB3iLwMf347xfPwQ6g8DoqtjkcV48zvfWOoO2b6YjbpUn2qRPRMHDunnSseq6XviSTFdX7eLwF5wSCxRVKbsm8q1vwI6GBw+aejIBVVXxB88r0VNk5zQWFp2yvPBV5FrB5Odd8VAo+Zv7HgdC+X1uOWT5vtfHbULIr5fgBV3TYsJ6eotjE0S8VQbzITPcRUWp+ksg940dzZ3h27WWZyxyrIugH76s=

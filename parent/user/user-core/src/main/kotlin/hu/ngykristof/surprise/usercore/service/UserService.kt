@@ -2,17 +2,16 @@ package hu.ngykristof.surprise.usercore.service
 
 import hu.ngykristof.surprise.commonscore.extensions.orNull
 import hu.ngykristof.surprise.userapi.dto.NewUserRequest
+import hu.ngykristof.surprise.userapi.dto.ResendActivationEmailRequest
 import hu.ngykristof.surprise.userapi.dto.UpdateUserRequest
 import hu.ngykristof.surprise.userapi.dto.UserDetailsResponse
 import hu.ngykristof.surprise.userapi.dto.loginvalidation.ValidateUserLoginRequest
 import hu.ngykristof.surprise.userapi.dto.loginvalidation.ValidateUserLoginResponse
 import hu.ngykristof.surprise.usercore.domain.UserEntity
 import hu.ngykristof.surprise.usercore.error.*
-import hu.ngykristof.surprise.usercore.mapper.toEntity
-import hu.ngykristof.surprise.usercore.mapper.toUpdatedUserEntity
-import hu.ngykristof.surprise.usercore.mapper.toUserDetailsResponse
-import hu.ngykristof.surprise.usercore.mapper.toValidateUserLoginResponse
+import hu.ngykristof.surprise.usercore.mapper.*
 import hu.ngykristof.surprise.usercore.repository.UserRepository
+import org.slf4j.LoggerFactory
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
@@ -20,8 +19,12 @@ import org.springframework.stereotype.Service
 @Service
 class UserService(
         private val userRepository: UserRepository,
-        private val encoder: PasswordEncoder
+        private val encoder: PasswordEncoder,
+        private val mailService: MailService
 ) {
+
+    private val log = LoggerFactory.getLogger(UserService::class.java)
+
 
     fun registerNewUser(newUserRequest: NewUserRequest) {
 
@@ -33,19 +36,38 @@ class UserService(
             throw EmailAlreadyUsedException()
         }
 
-        if (newUserRequest.email.isEmailInvalid()) {
-            throw InvalidEmailException()
-        }
+        val newUser = userRepository.save(newUserRequest.toEntity(encoder))
+        mailService.sendActivationEmail(newUser)
 
-        userRepository.save(newUserRequest.toEntity(encoder))
+        log.debug("Created Information for User: {}", newUser)
+    }
+
+    fun resendActivationEmail(request: ResendActivationEmailRequest) {
+        val user = userRepository.findOneByUsername(request.username) ?: throw UserNotFoundException()
+        mailService.sendActivationEmail(user)
+        log.debug("Resend activation email for User: {}", user)
+    }
+
+
+    fun activateUserAccount(activationKey: String) {
+        log.debug("Activating user for activation key {}", activationKey)
+
+        val user = userRepository.findOneByActivationKey(activationKey)
+                ?: throw ActivationKeyNotFoundException()
+        userRepository.save(user.toActivatedUserEntity())
+
+        log.debug("Activated user: {}", user)
     }
 
     fun validateUserLogin(validateUserLoginRequest: ValidateUserLoginRequest): ValidateUserLoginResponse {
         val user = userRepository
-                .findByUsername(validateUserLoginRequest.username)
+                .findOneByUsername(validateUserLoginRequest.username)
                 ?: throw WrongUsernameException()
 
-        return user.checkPassword(validateUserLoginRequest.password).toValidateUserLoginResponse()
+        return user
+                .checkPassword(validateUserLoginRequest.password)
+                .checkEmailVerification()
+                .toValidateUserLoginResponse()
     }
 
     fun getUserDetails(userId: String): UserDetailsResponse {
@@ -60,33 +82,24 @@ class UserService(
             throw UsernameAlreadyUsedException()
         }
 
-
-        if (updateUserRequest.username.isUsernameAlreadyUsed()) {
-            throw UsernameAlreadyUsedException()
-        }
-
         if (updateUserRequest.email.isEmailAlreadyUsed()) {
             throw EmailAlreadyUsedException()
         }
 
-        if (updateUserRequest.email.isEmailInvalid()) {
-            throw InvalidEmailException()
-        }
-
-        userRepository.save(user.toUpdatedUserEntity(updateUserRequest))
+        val updatedUser = userRepository.save(user.toUpdatedUserEntity(updateUserRequest))
+        log.debug("Changed Information for User: {}", updatedUser)
     }
 
     //region support extensions
-    private fun String.isEmailInvalid() = !this.contains("@")
 
     private fun String.isUsernameAlreadyUsed(): Boolean {
-        val registeredUser = userRepository.findByUsername(this)
-        return registeredUser != null
+        val existingUser = userRepository.findOneByUsername(this) ?: return false
+        return removeNonActivatedUser(existingUser)
     }
 
     private fun String.isEmailAlreadyUsed(): Boolean {
-        val registeredUser = userRepository.findByUsername(this)
-        return registeredUser != null
+        val existingUser = userRepository.findOneByEmailIgnoreCase(this) ?: return false
+        return removeNonActivatedUser(existingUser)
     }
 
     private fun UserEntity.checkPassword(password: String): UserEntity {
@@ -94,6 +107,24 @@ class UserService(
             throw WrongPasswordException()
         }
         return this
+    }
+
+    private fun UserEntity.checkEmailVerification(): UserEntity {
+        if (!this.isActive) {
+            throw NotVerifiedEmailException()
+        }
+        return this
+    }
+
+
+    private fun removeNonActivatedUser(existingUser: UserEntity): Boolean {
+        if (existingUser.isActive) {
+            return true
+        }
+
+        userRepository.delete(existingUser)
+        userRepository.flush()
+        return false
     }
     //endregion
 }

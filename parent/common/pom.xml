@@ -19,6 +19,5 @@
     <modules>
         <module>commons-core</module>
         <module>commons-domain</module>
-        <module>commons-config</module>
     </modules>
 </project>

@@ -6,7 +6,7 @@ import hu.ngykristof.surprise.authapi.dto.tokenvalidation.TokenValidationRequest
 import hu.ngykristof.surprise.authapi.dto.tokenvalidation.TokenValidationResponse
 import hu.ngykristof.surprise.authcore.service.LoginService
 import hu.ngykristof.surprise.authcore.service.TokenService
-import hu.ngykristof.surprise.commomconfig.config.jwt.JwtConfig
+import hu.ngykristof.surprise.commonscore.config.jwt.JwtConfig
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping

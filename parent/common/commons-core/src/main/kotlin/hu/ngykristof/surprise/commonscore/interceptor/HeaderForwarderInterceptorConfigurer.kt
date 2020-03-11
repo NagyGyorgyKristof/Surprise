@@ -1,6 +1,6 @@
 package hu.ngykristof.surprise.commonscore.interceptor
 
-import hu.ngykristof.surprise.commomconfig.config.jwt.JwtConfig
+import hu.ngykristof.surprise.commonscore.config.jwt.JwtConfig
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -14,4 +14,10 @@ class HeaderForwarderInterceptorConfigurer(
     fun authInfoForwarderInterceptor(): HeaderForwarderInterceptor {
         return HeaderForwarderInterceptor(jwtConfig.header)
     }
+
+    @Bean(name = ["acceptLanguageHeaderForwarderInterceptor"])
+    fun acceptLanguageHeaderForwarderInterceptor(): HeaderForwarderInterceptor? {
+        return HeaderForwarderInterceptor("Accept-Language")
+    }
+
 }

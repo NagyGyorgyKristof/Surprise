@@ -1,6 +1,7 @@
 package hu.ngykristof.surprise.userapi
 
 import hu.ngykristof.surprise.userapi.dto.NewUserRequest
+import hu.ngykristof.surprise.userapi.dto.ResendActivationEmailRequest
 import hu.ngykristof.surprise.userapi.dto.UpdateUserRequest
 import hu.ngykristof.surprise.userapi.dto.UserDetailsResponse
 import hu.ngykristof.surprise.userapi.dto.loginvalidation.ValidateUserLoginRequest
@@ -22,4 +23,10 @@ interface UserFeignClient {
 
     @PutMapping("/users/details/{userId}")
     fun updateUser(@RequestBody userRequest: UpdateUserRequest, @PathVariable("userId") userId: String)
+
+    @GetMapping("/users/activate")
+    fun activateUserAccount(@RequestParam(value = "key") key: String)
+
+    @PostMapping("/users/resend-activation-email")
+    fun registerNewUser(@RequestBody resendActivationEmailRequest: ResendActivationEmailRequest)
 }

@@ -1,4 +1,4 @@
-package hu.ngykristof.surprise.commomconfig.config.jwt
+package hu.ngykristof.surprise.commonscore.config.jwt
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Import

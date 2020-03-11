@@ -1,6 +1,7 @@
 package hu.ngykristof.surprise.usercore.controller
 
 import hu.ngykristof.surprise.userapi.dto.NewUserRequest
+import hu.ngykristof.surprise.userapi.dto.ResendActivationEmailRequest
 import hu.ngykristof.surprise.userapi.dto.UpdateUserRequest
 import hu.ngykristof.surprise.userapi.dto.UserDetailsResponse
 import hu.ngykristof.surprise.userapi.dto.loginvalidation.ValidateUserLoginRequest
@@ -16,6 +17,16 @@ class UserController(
     @PostMapping("/register")
     fun registerNewUser(@RequestBody userRequest: NewUserRequest) {
         userService.registerNewUser(userRequest)
+    }
+
+    @PostMapping("/resend-activation-email")
+    fun registerNewUser(@RequestBody resendActivationEmailRequest: ResendActivationEmailRequest) {
+        userService.resendActivationEmail(resendActivationEmailRequest)
+    }
+
+    @GetMapping("/activate")
+    fun activateUserAccount(@RequestParam(value = "key") key: String) {
+        userService.activateUserAccount(key)
     }
 
     @PostMapping("/validate-login")

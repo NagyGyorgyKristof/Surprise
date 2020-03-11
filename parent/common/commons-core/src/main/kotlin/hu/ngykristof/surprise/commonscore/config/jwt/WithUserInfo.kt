@@ -1,4 +1,4 @@
-package hu.ngykristof.surprise.commonscore.config
+package hu.ngykristof.surprise.commonscore.config.jwt
 
 
 @kotlin.annotation.Retention(AnnotationRetention.RUNTIME)

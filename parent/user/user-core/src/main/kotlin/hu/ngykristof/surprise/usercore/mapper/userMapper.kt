@@ -7,6 +7,7 @@ import hu.ngykristof.surprise.userapi.dto.loginvalidation.Role
 import hu.ngykristof.surprise.userapi.dto.loginvalidation.ValidateUserLoginResponse
 import hu.ngykristof.surprise.usercore.domain.RoleEntity
 import hu.ngykristof.surprise.usercore.domain.UserEntity
+import hu.ngykristof.surprise.usercore.service.util.RandomUtil
 import org.springframework.security.crypto.password.PasswordEncoder
 
 
@@ -17,7 +18,9 @@ fun NewUserRequest.toEntity(passwordEncoder: PasswordEncoder): UserEntity {
             username = this.username,
             password = passwordEncoder.encode(this.password),
             email = this.email,
-            roles = getRoles()
+            isActive = false,
+            activationKey = RandomUtil.generateActivationKey(),
+            roles = this.roles.map { it.toEntity() }
     )
 }
 
@@ -46,23 +49,25 @@ fun UserEntity.toUpdatedUserEntity(updateUserRequest: UpdateUserRequest): UserEn
         email = updateUserRequest.email
         username = updateUserRequest.username
     }
-
-
 }
 
-
-private fun NewUserRequest.getRoles(): List<RoleEntity> {
-    return if (this.isAdmin) {
-        listOf(RoleEntity.USER, RoleEntity.ADMIN)
-    } else {
-        listOf(RoleEntity.USER)
+fun UserEntity.toActivatedUserEntity(): UserEntity {
+    return this.apply {
+        activationKey = ""
+        isActive = true
     }
 }
 
 private fun RoleEntity.toDTO(): Role {
-    return when (this.ordinal) {
-        1 -> Role.USER
-        2 -> Role.ADMIN
-        else -> Role.USER
+    return when (this) {
+        RoleEntity.USER -> Role.USER
+        RoleEntity.ADMIN -> Role.ADMIN
+    }
+}
+
+fun Role.toEntity(): RoleEntity {
+    return when (this) {
+        Role.USER -> RoleEntity.USER
+        Role.ADMIN -> RoleEntity.ADMIN
     }
 }

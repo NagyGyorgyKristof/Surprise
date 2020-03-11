@@ -4,7 +4,7 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import hu.ngykristof.surprise.authapi.dto.login.LoginRequest
 import hu.ngykristof.surprise.authcore.error.UserLoginFailedException
-import hu.ngykristof.surprise.commomconfig.config.jwt.JwtConfig
+import hu.ngykristof.surprise.commonscore.config.jwt.JwtConfig
 import hu.ngykristof.surprise.userapi.UserFeignClient
 import hu.ngykristof.surprise.userapi.dto.loginvalidation.ValidateUserLoginRequest
 import org.springframework.stereotype.Service

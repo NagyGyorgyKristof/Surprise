@@ -1,6 +1,6 @@
 package hu.ngykristof.surprise.commonscore.security
 
-import hu.ngykristof.surprise.commomconfig.config.jwt.JwtConfig
+import hu.ngykristof.surprise.commonscore.config.jwt.JwtConfig
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -10,7 +10,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 @Configuration
 @EnableWebSecurity
-@Order(1000)
+@Order(2)
 //TODO refactor this code with kotlin DSL at 2.3.0 main version
 class CommonWebSecurity(
         private val jwtConfig: JwtConfig

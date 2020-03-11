@@ -5,7 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.exceptions.JWTVerificationException
 import hu.ngykristof.surprise.authapi.dto.tokenvalidation.TokenValidationRequest
 import hu.ngykristof.surprise.authapi.dto.tokenvalidation.TokenValidationResponse
-import hu.ngykristof.surprise.commomconfig.config.jwt.JwtConfig
+import hu.ngykristof.surprise.commonscore.config.jwt.JwtConfig
 import org.springframework.stereotype.Service
 
 

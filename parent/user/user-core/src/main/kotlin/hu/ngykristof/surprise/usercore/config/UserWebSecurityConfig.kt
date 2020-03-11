@@ -1,7 +1,7 @@
 package hu.ngykristof.surprise.usercore.config
 
-import hu.ngykristof.surprise.commomconfig.config.jwt.JwtConfig
-import hu.ngykristof.surprise.usercore.security.AuthorizationFilter
+import hu.ngykristof.surprise.commonscore.config.jwt.JwtConfig
+import hu.ngykristof.surprise.commonscore.security.AuthorizationFilter
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
@@ -16,6 +16,8 @@ class UserWebSecurityConfig(
         http.authorizeRequests()
                 .antMatchers("/register").permitAll()
                 .antMatchers("/validate-login").permitAll()
+                .antMatchers("/activate").permitAll()
+                .antMatchers("/resend-activation-email").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(AuthorizationFilter(jwtConfig),

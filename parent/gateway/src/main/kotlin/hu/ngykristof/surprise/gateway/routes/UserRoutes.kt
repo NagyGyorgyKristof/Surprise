@@ -20,6 +20,11 @@ class UserRoutes(
     fun userRouteLocator(builder: RouteLocatorBuilder) = builder.routes {
         route(id = "user-service-auth") {
             path("/users/register")
+                    .or()
+                    .path("/users/activate")
+                    .or()
+                    .path("/users/resend-activation-email")
+
             uri("lb://user-service/")
         }
 

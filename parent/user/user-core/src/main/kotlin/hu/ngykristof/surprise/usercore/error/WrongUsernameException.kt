@@ -1,0 +1,8 @@
+package hu.ngykristof.surprise.usercore.error
+
+import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.ResponseStatus
+
+@ResponseStatus(code = HttpStatus.UNAUTHORIZED, reason = " Login failed due to wrong username")
+class WrongUsernameException : RuntimeException() {
+}

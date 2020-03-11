@@ -1,0 +1,29 @@
+server:
+  port: 9000
+  servlet:
+    context-path: /auth
+
+spring:
+  application:
+    name: auth-service
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+
+surprise:
+  auth:
+    jwt:
+      header: Authorization
+      tokenPrefix: "Bearer "
+      expiration: 86400000
+      secret: lrTnWakwCNZlDo0i5l5xkngtQMN0zMle4PJpyl1cHkh8qXbKUblayqB7w2WfARi
+      rolePrefix: ROLE_
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    com.netflix.: info
+    org.apache.http: info

@@ -29,7 +29,7 @@ class UserRoutes(
         }
 
         route(id = "user-service-core") {
-            path("/users/details/**")
+            path("/users/me/**")
             filters {
                 this.filter(AuthenticatedRequestFilter(webClientBuilder, accessTokenUrl).apply(Any()))
             }

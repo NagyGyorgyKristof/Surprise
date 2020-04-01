@@ -5,8 +5,8 @@ import hu.ngykristof.surprise.userapi.dto.NewUserRequest
 import hu.ngykristof.surprise.userapi.dto.ResendActivationEmailRequest
 import hu.ngykristof.surprise.userapi.dto.UpdateUserRequest
 import hu.ngykristof.surprise.userapi.dto.UserDetailsResponse
+import hu.ngykristof.surprise.userapi.dto.loginvalidation.CoreUserInfoResponse
 import hu.ngykristof.surprise.userapi.dto.loginvalidation.ValidateUserLoginRequest
-import hu.ngykristof.surprise.userapi.dto.loginvalidation.ValidateUserLoginResponse
 import hu.ngykristof.surprise.usercore.domain.UserEntity
 import hu.ngykristof.surprise.usercore.error.*
 import hu.ngykristof.surprise.usercore.mapper.*
@@ -14,6 +14,7 @@ import hu.ngykristof.surprise.usercore.repository.UserRepository
 import org.slf4j.LoggerFactory
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import java.time.OffsetDateTime
 
 
 @Service
@@ -43,7 +44,7 @@ class UserService(
     }
 
     fun resendActivationEmail(request: ResendActivationEmailRequest) {
-        val user = userRepository.findOneByUsername(request.username) ?: throw UserNotFoundException()
+        val user = userRepository.findOneByEmailIgnoreCase(request.email).checkExistenceByEmail(request.email)
         mailService.sendActivationEmail(user)
         log.debug("Resend activation email for User: {}", user)
     }
@@ -59,24 +60,23 @@ class UserService(
         log.debug("Activated user: {}", user)
     }
 
-    fun validateUserLogin(validateUserLoginRequest: ValidateUserLoginRequest): ValidateUserLoginResponse {
+    fun validateUserLogin(validateUserLoginRequest: ValidateUserLoginRequest): CoreUserInfoResponse {
         val user = userRepository
                 .findOneByUsername(validateUserLoginRequest.username)
-                ?: throw WrongUsernameException()
 
-        return user
-                .checkPassword(validateUserLoginRequest.password)
+        return user.checkUsername()
+                .checkPasswordCorrectness(validateUserLoginRequest.password)
                 .checkEmailVerification()
-                .toValidateUserLoginResponse()
+                .toCoreUserInfoResponse()
     }
 
     fun getUserDetails(userId: String): UserDetailsResponse {
-        val user = userRepository.findById(userId).orNull() ?: throw UserNotFoundException()
+        val user = userRepository.findById(userId).orNull().checkExistenceById(userId)
         return user.toUserDetailsResponse()
     }
 
     fun updateUserDetails(updateUserRequest: UpdateUserRequest, userId: String) {
-        val user = userRepository.findById(userId).orNull() ?: throw UserNotFoundException()
+        val user = userRepository.findById(userId).orNull().checkExistenceById(userId)
 
         if (updateUserRequest.username.isUsernameAlreadyUsed()) {
             throw UsernameAlreadyUsedException()
@@ -88,6 +88,12 @@ class UserService(
 
         val updatedUser = userRepository.save(user.toUpdatedUserEntity(updateUserRequest))
         log.debug("Changed Information for User: {}", updatedUser)
+    }
+
+    fun deleteUser(userId: String) {
+        val user = userRepository.findById(userId).orNull().checkExistenceById(userId)
+        userRepository.delete(user)
+        log.debug("User has been deleted with userId: $userId")
     }
 
     //region support extensions
@@ -102,7 +108,7 @@ class UserService(
         return removeNonActivatedUser(existingUser)
     }
 
-    private fun UserEntity.checkPassword(password: String): UserEntity {
+    private fun UserEntity.checkPasswordCorrectness(password: String): UserEntity {
         if (!encoder.matches(password, this.password)) {
             throw WrongPasswordException()
         }
@@ -126,5 +132,34 @@ class UserService(
         userRepository.flush()
         return false
     }
+
+    private fun UserEntity?.checkUsername(): UserEntity {
+        return this ?: throw WrongUsernameException()
+    }
+
+    private fun UserEntity?.checkExistenceById(userId: String): UserEntity {
+        return this ?: throw UserNotFoundException("No user was found for this userId :$userId")
+    }
+
+    private fun UserEntity?.checkExistenceByResetKey(resetKey: String): UserEntity {
+        return this ?: throw UserNotFoundException("No user was found for this reset key: $resetKey")
+    }
+
+    private fun UserEntity?.checkExistenceByActivationKey(activationKey: String): UserEntity {
+        return this ?: throw UserNotFoundException("No user was found for this activation key: $activationKey")
+    }
+
+    private fun UserEntity?.checkExistenceByEmail(email: String): UserEntity {
+        return this ?: throw UserNotFoundException("No user was found for this email: $email")
+    }
     //endregion
+
+    fun removeNotActivatedUsers() {
+        userRepository
+                .findAllByIsActiveIsFalseAndActivationKeyIsNotNullAndCreationDateBefore(OffsetDateTime.now().minusDays(3))
+                .forEach { userRepository.delete(it) }
+    }
+
+    fun getCoreUserInfoForToken(userId: String) = userRepository.findById(userId).orNull()?.toCoreUserInfoResponse()
+            ?: throw UserNotFoundException("No user was found for this userId: $userId")
 }

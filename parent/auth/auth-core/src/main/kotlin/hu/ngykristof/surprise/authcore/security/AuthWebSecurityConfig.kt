@@ -1,4 +1,4 @@
-package hu.ngykristof.surprise.usercore.config
+package hu.ngykristof.surprise.authcore.security
 
 import hu.ngykristof.surprise.commonscore.config.jwt.JwtConfig
 import hu.ngykristof.surprise.commonscore.security.AuthorizationFilter
@@ -12,16 +12,14 @@ import org.springframework.stereotype.Component
 @Component
 @EnableWebSecurity
 @Order(1)
-class UserWebSecurityConfig(
+class AuthWebSecurityConfig(
         private val jwtConfig: JwtConfig
 ) : WebSecurityConfigurerAdapter() {
 
     override fun configure(http: HttpSecurity) {
         http.authorizeRequests()
-                .antMatchers("/register").permitAll()
-                .antMatchers("/validate-login").permitAll()
-                .antMatchers("/activate").permitAll()
-                .antMatchers("/resend-activation-email").permitAll()
+                .antMatchers("/me/logout").authenticated()
+                .anyRequest().permitAll()
                 .and()
                 .addFilterBefore(AuthorizationFilter(jwtConfig),
                         BasicAuthenticationFilter::class.java)

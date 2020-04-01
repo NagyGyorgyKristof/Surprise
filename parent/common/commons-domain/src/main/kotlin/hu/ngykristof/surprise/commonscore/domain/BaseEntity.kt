@@ -13,13 +13,13 @@ abstract class BaseEntity {
     @Column(length = 36)
     val id: String? = null
 
-    private var created: OffsetDateTime? = null
+    private var creationDate: OffsetDateTime? = null
 
     private var lastModified: OffsetDateTime? = null
 
     @PrePersist
     fun onPrePersist() {
-        created = OffsetDateTime.now()
+        creationDate = OffsetDateTime.now()
     }
 
     @PreUpdate

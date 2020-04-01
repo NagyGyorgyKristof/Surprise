@@ -1,13 +1,13 @@
 package hu.ngykristof.surprise.usercore.mapper
 
+import hu.ngykristof.surprise.commonscore.util.RandomUtil
 import hu.ngykristof.surprise.userapi.dto.NewUserRequest
 import hu.ngykristof.surprise.userapi.dto.UpdateUserRequest
 import hu.ngykristof.surprise.userapi.dto.UserDetailsResponse
+import hu.ngykristof.surprise.userapi.dto.loginvalidation.CoreUserInfoResponse
 import hu.ngykristof.surprise.userapi.dto.loginvalidation.Role
-import hu.ngykristof.surprise.userapi.dto.loginvalidation.ValidateUserLoginResponse
 import hu.ngykristof.surprise.usercore.domain.RoleEntity
 import hu.ngykristof.surprise.usercore.domain.UserEntity
-import hu.ngykristof.surprise.usercore.service.util.RandomUtil
 import org.springframework.security.crypto.password.PasswordEncoder
 
 
@@ -25,8 +25,8 @@ fun NewUserRequest.toEntity(passwordEncoder: PasswordEncoder): UserEntity {
 }
 
 
-fun UserEntity.toValidateUserLoginResponse(): ValidateUserLoginResponse {
-    return ValidateUserLoginResponse(
+fun UserEntity.toCoreUserInfoResponse(): CoreUserInfoResponse {
+    return CoreUserInfoResponse(
             username = this.username,
             userId = this.id ?: "",
             roles = this.roles.map { it.toDTO() }

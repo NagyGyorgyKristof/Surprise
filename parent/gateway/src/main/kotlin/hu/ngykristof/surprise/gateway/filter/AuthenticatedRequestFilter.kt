@@ -23,7 +23,7 @@ import org.springframework.web.server.ServerWebExchange
 class AuthenticatedRequestFilter(
         private val webClientBuilder: WebClient.Builder,
         @Value("\${surprise.validate-access-token-url}")
-        private val accessTokenUrl: String
+        private val validateAccessTokenUrl: String
 ) : GatewayFilterFactory<Any> {
 
     override fun newConfig(): Any {
@@ -36,9 +36,9 @@ class AuthenticatedRequestFilter(
             val tokenValidationResponse = checkAccessToken(accessToken)
 
             if (tokenValidationResponse.isValid) {
-                exchange.putAccessTokenOnRequest(tokenValidationResponse.accessToken, chain)
+                exchange.putAccessTokenOnRequest(accessToken, chain)
             } else {
-                exchange.sendUnauthorisedError()
+                exchange.sendUnauthorisedError(tokenValidationResponse.errorMessage ?: "")
             }
         }
     }
@@ -51,7 +51,7 @@ class AuthenticatedRequestFilter(
         withContext(Dispatchers.IO) {
             webClientBuilder.build()
                     .post()
-                    .uri(accessTokenUrl)
+                    .uri(validateAccessTokenUrl)
                     .bodyValue(TokenValidationRequest(accessToken = accessToken))
                     .awaitExchange()
                     .awaitBody<TokenValidationResponse>()

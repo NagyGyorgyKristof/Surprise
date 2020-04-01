@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm
 import hu.ngykristof.surprise.commonscore.config.jwt.JwtConfig
 import hu.ngykristof.surprise.commonscore.config.jwt.WithUserInfo
 import hu.ngykristof.surprise.commonscore.dto.UserInfo
+import hu.ngykristof.surprise.commonscore.security.SecurityConstants.USERNAME_KEY
 import org.springframework.core.MethodParameter
 import org.springframework.web.bind.support.WebDataBinderFactory
 import org.springframework.web.context.request.NativeWebRequest
@@ -33,7 +34,7 @@ class UserInfoHandlerMethodArgumentResolver(
                 .verify(token.replace(jwtConfig.tokenPrefix, ""))
 
         val userId = jwt.subject
-        val username = jwt.getClaim("username").asString()
+        val username = jwt.getClaim(USERNAME_KEY).asString()
 
         return UserInfo(userId, username)
     }

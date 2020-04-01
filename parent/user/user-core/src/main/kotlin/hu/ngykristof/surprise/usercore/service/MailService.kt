@@ -1,6 +1,7 @@
 package hu.ngykristof.surprise.usercore.service
 
 import hu.ngykristof.surprise.usercore.domain.UserEntity
+import hu.ngykristof.surprise.usercore.util.executeAsyncTask
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.MessageSource
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Service
 import org.thymeleaf.context.Context
 import org.thymeleaf.spring5.SpringTemplateEngine
 import java.nio.charset.StandardCharsets
-import java.util.*
 
 @Service
 class MailService(
@@ -30,7 +30,7 @@ class MailService(
         private const val BASE_URL = "baseUrl"
     }
 
-    private fun sendEmail(to: String, subject: String, content: String, isMultipart: Boolean, isHtml: Boolean) {
+    private suspend fun sendEmail(to: String, subject: String, content: String, isMultipart: Boolean, isHtml: Boolean) {
         log.debug("Send email[multipart '{}' and html '{}'] to '{}' with subject '{}' and content={}",
                 isMultipart, isHtml, to, subject, content)
         // Prepare message using a Spring helper
@@ -53,8 +53,8 @@ class MailService(
         }
     }
 
-    private fun sendEmailFromTemplate(user: UserEntity, templateName: String, titleKey: String) {
-        val locale =  LocaleContextHolder.getLocale()
+    private suspend fun sendEmailFromTemplate(user: UserEntity, templateName: String, titleKey: String) {
+        val locale = LocaleContextHolder.getLocale()
         val context = Context(locale)
         context.setVariable(USER, user)
         context.setVariable(BASE_URL, baseUrl)
@@ -63,7 +63,7 @@ class MailService(
         sendEmail(user.email, subject, content, isMultipart = false, isHtml = true)
     }
 
-    fun sendActivationEmail(user: UserEntity) {
+    fun sendActivationEmail(user: UserEntity) = executeAsyncTask {
         log.debug("Sending activation email to '{}'", user.email)
         sendEmailFromTemplate(user, "mail/activationEmail", "email.activation.title")
     }

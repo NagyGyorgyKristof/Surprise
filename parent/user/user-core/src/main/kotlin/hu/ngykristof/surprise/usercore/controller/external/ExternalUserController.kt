@@ -1,4 +1,4 @@
-package hu.ngykristof.surprise.usercore.controller
+package hu.ngykristof.surprise.usercore.controller.external
 
 import hu.ngykristof.surprise.commonscore.config.jwt.WithUserInfo
 import hu.ngykristof.surprise.commonscore.dto.UserInfo
@@ -6,13 +6,11 @@ import hu.ngykristof.surprise.userapi.dto.NewUserRequest
 import hu.ngykristof.surprise.userapi.dto.ResendActivationEmailRequest
 import hu.ngykristof.surprise.userapi.dto.UpdateUserRequest
 import hu.ngykristof.surprise.userapi.dto.UserDetailsResponse
-import hu.ngykristof.surprise.userapi.dto.loginvalidation.CoreUserInfoResponse
-import hu.ngykristof.surprise.userapi.dto.loginvalidation.ValidateUserLoginRequest
 import hu.ngykristof.surprise.usercore.service.UserService
 import org.springframework.web.bind.annotation.*
 
 @RestController
-class UserController(
+class ExternalUserController(
         private val userService: UserService
 ) {
 
@@ -21,24 +19,14 @@ class UserController(
         userService.registerNewUser(userRequest)
     }
 
-    @PostMapping("/resend-activation-email")
-    fun registerNewUser(@RequestBody resendActivationEmailRequest: ResendActivationEmailRequest) {
-        userService.resendActivationEmail(resendActivationEmailRequest)
-    }
-
-    @GetMapping("/core-info/{userId}")
-    fun getCoreUserInfoForToken(@PathVariable("userId") userId: String): CoreUserInfoResponse {
-        return userService.getCoreUserInfoForToken(userId)
-    }
-
     @GetMapping("/activate")
     fun activateUserAccount(@RequestParam(value = "key") key: String) {
         userService.activateUserAccount(key)
     }
 
-    @PostMapping("/validate-login")
-    fun validateLogin(@RequestBody validateUserLoginRequest: ValidateUserLoginRequest): CoreUserInfoResponse {
-        return userService.validateUserLogin(validateUserLoginRequest)
+    @PostMapping("/resend-activation-email")
+    fun resendActivationEmail(@RequestBody resendActivationEmailRequest: ResendActivationEmailRequest) {
+        userService.resendActivationEmail(resendActivationEmailRequest)
     }
 
     @GetMapping("/me")

@@ -1,10 +1,8 @@
-package hu.ngykristof.surprise.authcore.controller
+package hu.ngykristof.surprise.authcore.controller.internal
 
 import hu.ngykristof.surprise.authapi.dto.login.LoginRequest
 import hu.ngykristof.surprise.authapi.dto.login.TokenResponse
 import hu.ngykristof.surprise.authapi.dto.renewtoken.AccessTokenRenewalRequest
-import hu.ngykristof.surprise.authapi.dto.tokenvalidation.TokenValidationRequest
-import hu.ngykristof.surprise.authapi.dto.tokenvalidation.TokenValidationResponse
 import hu.ngykristof.surprise.authcore.service.AuthService
 import hu.ngykristof.surprise.authcore.service.messages.TokenResult
 import hu.ngykristof.surprise.commonscore.config.jwt.JwtConfig
@@ -22,12 +20,6 @@ class AuthController(
         private val jwtConfig: JwtConfig
 ) {
 
-
-    @PostMapping("/validate")
-    fun validateToken(@RequestBody validateTokenRequest: TokenValidationRequest): TokenValidationResponse {
-        return authService.validateToken(validateTokenRequest)
-    }
-
     @PostMapping("/authenticate")
     fun login(@RequestBody loginRequest: LoginRequest): ResponseEntity<TokenResponse> {
         val tokenResult = authService.loginUser(loginRequest)
@@ -40,7 +32,7 @@ class AuthController(
 
     }
 
-    @PostMapping("/token")
+    @PostMapping("/renew-access-token")
     fun renewAccessToken(@RequestBody renewalRequest: AccessTokenRenewalRequest): ResponseEntity<TokenResponse> {
         val tokenResult = authService.renewToken(renewalRequest)
         val responseHeaders = createAuthorizationHeader(tokenResult)

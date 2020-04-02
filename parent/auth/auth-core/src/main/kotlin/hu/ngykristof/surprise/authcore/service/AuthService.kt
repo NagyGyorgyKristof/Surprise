@@ -91,7 +91,7 @@ class AuthService(
 
     fun validateToken(validateTokenRequest: TokenValidationRequest): TokenValidationResponse {
         return try {
-            validateTokenRequest.accessToken.verifyAccessToken()
+            validateTokenRequest.accessToken.verifyToken()
 
             TokenValidationResponse(isValid = true)
         } catch (e: Exception) {
@@ -107,8 +107,8 @@ class AuthService(
         tokenProvider.verifyRefreshToken(this.expirationDate)
     }
 
-    fun String.verifyAccessToken() {
-        tokenProvider.isAccessTokenValid(this)
+    fun String.verifyToken() {
+        tokenProvider.verifyAccessToken(this)
     }
 
     fun RefreshTokenEntity?.verifyExistence(): RefreshTokenEntity {

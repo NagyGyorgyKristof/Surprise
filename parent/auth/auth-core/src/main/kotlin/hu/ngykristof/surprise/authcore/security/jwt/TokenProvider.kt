@@ -39,18 +39,13 @@ class TokenProvider(
         )
     }
 
-    fun isAccessTokenValid(accessToken: String): Boolean {
-        return try {
-            //Throw an JWTDecodeException exception if the token is not formatted or it has been expired
-            JWT.require(Algorithm.HMAC512(jwtConfig.secret.toByteArray()))
-                    .build()
-                    .verify(accessToken.replace(jwtConfig.tokenPrefix, ""))
-            true
-        } catch (e: Exception) {
-            logger.info("Invalid AccessToken exception has been occurred with message: ${e.message} ")
-            throw TokenVerificationException("AccessToken exception with message: ${e.message}")
-        }
+    fun verifyAccessToken(accessToken: String) {
+        //Throw an JWTDecodeException exception if the token is not formatted or it has been expired
+        JWT.require(Algorithm.HMAC512(jwtConfig.secret.toByteArray()))
+                .build()
+                .verify(accessToken.replace(jwtConfig.tokenPrefix, ""))
     }
+
 
     fun verifyRefreshToken(refreshTokenExpirationDate: OffsetDateTime) {
         if (OffsetDateTime.now().isAfter(refreshTokenExpirationDate)) {

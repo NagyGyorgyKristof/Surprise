@@ -7,6 +7,7 @@ services:
     container_name: surprise-db
     volumes:
       - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - database-data:/var/lib/postgresql/data/
     environment:
       POSTGRES_PASSWORD: root
       POSTGRES_USER: root
@@ -15,4 +16,4 @@ services:
       - 5432:5432
 volumes:
   postgres:
-
+  database-data:

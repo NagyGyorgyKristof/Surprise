@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.RequestBody
 @FeignClient("auth-service", decode404 = true)
 interface AuthFeignClient {
 
-    @PostMapping("/auth/validate")
+    @PostMapping("/auth/validate-access-token")
     fun validateToken(@RequestBody validateTokenRequest: TokenValidationRequest): TokenValidationResponse
 
     @PostMapping("/auth/authenticate")
     fun login(@RequestBody loginRequest: LoginRequest): ResponseEntity<TokenResponse>
 
-    @PostMapping("/auth/token")
+    @PostMapping("/auth/renew-access-token")
     fun renewAccessToken(@RequestBody renewalRequest: AccessTokenRenewalRequest): ResponseEntity<TokenResponse>
 
     @PostMapping("/auth/me/logout")

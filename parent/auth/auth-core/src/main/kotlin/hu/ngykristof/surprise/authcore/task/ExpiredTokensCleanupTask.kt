@@ -15,7 +15,7 @@ class ExpiredTokensCleanupTask(
 
     private val log = logger()
 
-    @Scheduled(cron = "\${dprototypefirst.auth.token.cleanup-frequency-cron-expression}")
+    @Scheduled(cron = "\${surprise.auth.token.cleanup-frequency-cron-expression}")
     fun cleanExpiredTokens() {
         log.info("The expired tokens were deleted in UTC at: ${OffsetDateTime.now()} ")
         authService.cleanExpiredTokens()

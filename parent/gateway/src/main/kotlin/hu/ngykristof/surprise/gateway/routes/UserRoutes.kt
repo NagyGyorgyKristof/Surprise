@@ -18,21 +18,16 @@ class UserRoutes(
 
     @Bean
     fun userRouteLocator(builder: RouteLocatorBuilder) = builder.routes {
-        route(id = "user-service-auth") {
-            path("/users/register")
-                    .or()
-                    .path("/users/activate")
-                    .or()
-                    .path("/users/resend-activation-email")
-
-            uri("lb://user-service/")
-        }
-
         route(id = "user-service-core") {
             path("/users/me/**")
             filters {
                 this.filter(AuthenticatedRequestFilter(webClientBuilder, accessTokenUrl).apply(Any()))
             }
+            uri("lb://user-service/")
+        }
+
+        route(id = "user-service-auth") {
+            path("/users/**")
             uri("lb://user-service/")
         }
     }

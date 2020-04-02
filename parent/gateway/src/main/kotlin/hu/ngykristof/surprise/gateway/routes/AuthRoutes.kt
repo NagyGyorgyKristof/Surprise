@@ -18,9 +18,11 @@ class AuthRoutes(
 
     @Bean
     fun authRouteLocator(builder: RouteLocatorBuilder) = builder.routes {
-        route(id = "logout") {
+        route(id = "auth-service-logout") {
             path("/auth/me/logout")
+
             filters {
+
                 this.filter(AuthenticatedRequestFilter(webClientBuilder, accessTokenUrl).apply(Any()))
             }
             uri("lb://auth-service/")

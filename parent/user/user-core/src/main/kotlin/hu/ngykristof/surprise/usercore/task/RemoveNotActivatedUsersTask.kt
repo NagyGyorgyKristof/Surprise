@@ -14,7 +14,7 @@ class RemoveNotActivatedUsersTask(
 
     val log = logger()
 
-    @Scheduled(cron = "\${dprototypefirst.auth.users.cleanup-frequency-cron-expression}")
+    @Scheduled(cron = "\${surprise.auth.users.cleanup-frequency-cron-expression}")
     fun removeNotActivatedUsers() {
         log.info("Deleting not activated users")
         userService.removeNotActivatedUsers()

@@ -89,9 +89,9 @@ class AuthService(
         expiredRefreshTokens.invalidateAll()
     }
 
-    fun validateToken(validateTokenRequest: TokenValidationRequest): TokenValidationResponse {
+    fun validateAccessToken(validateTokenRequest: TokenValidationRequest): TokenValidationResponse {
         return try {
-            validateTokenRequest.accessToken.verifyToken()
+            validateTokenRequest.token.verifyToken()
 
             TokenValidationResponse(isValid = true)
         } catch (e: Exception) {

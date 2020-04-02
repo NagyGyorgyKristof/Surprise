@@ -52,7 +52,7 @@ class AuthenticatedRequestFilter(
             webClientBuilder.build()
                     .post()
                     .uri(validateAccessTokenUrl)
-                    .bodyValue(TokenValidationRequest(accessToken = accessToken))
+                    .bodyValue(TokenValidationRequest(token = accessToken))
                     .awaitExchange()
                     .awaitBody<TokenValidationResponse>()
         }

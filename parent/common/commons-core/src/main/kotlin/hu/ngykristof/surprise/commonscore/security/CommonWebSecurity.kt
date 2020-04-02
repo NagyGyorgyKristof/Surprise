@@ -21,7 +21,7 @@ class CommonWebSecurity(
                 BasicAuthenticationFilter::class.java)
         http.authorizeRequests()
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
                 .and()
                 .csrf().disable()
     }

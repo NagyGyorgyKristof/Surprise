@@ -50,14 +50,12 @@ class AuthService(
         val refreshTokenEntity = tokenRepository
                 .findByValue(accessTokenRenewalMessage.refreshToken)
                 .verifyExistence()
-
-        refreshTokenEntity.verifyExpiration()
+                .verifyExpirationDate()
+                .invalidate()
 
         val coreUserInfo = userFeignClient.getCoreUserInfoForToken(refreshTokenEntity.userId)
 
-        refreshTokenEntity.invalidate()
         log.info("The expired refresh token was in invalidated successfully with userId: ${coreUserInfo.userId}")
-
 
         val tokenResult = createTokensForUser(coreUserInfo)
         log.info("Tokens were created successfully with useId: ${coreUserInfo.userId}")
@@ -103,8 +101,9 @@ class AuthService(
     }
 
     //region support extensions
-    fun RefreshTokenEntity.verifyExpiration() {
+    fun RefreshTokenEntity.verifyExpirationDate(): RefreshTokenEntity {
         tokenProvider.verifyRefreshToken(this.expirationDate)
+        return this
     }
 
     fun String.verifyToken() {
@@ -115,9 +114,10 @@ class AuthService(
         return this ?: throw TokenVerificationException("Invalid refreshToken")
     }
 
-    fun RefreshTokenEntity.invalidate() {
+    fun RefreshTokenEntity.invalidate(): RefreshTokenEntity {
         tokenRepository.delete(this)
         tokenRepository.flush()
+        return this
     }
 
     fun List<RefreshTokenEntity>.invalidateAll() {

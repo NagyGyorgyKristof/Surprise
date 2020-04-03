@@ -31,12 +31,12 @@ class ExternalUserController(
 
     @GetMapping("/me")
     fun getCurrentUser(@WithUserInfo userInfo: UserInfo): UserDetailsResponse {
-        return userService.getUserDetails(userId = userInfo.userId)
+        return userService.getCurrentUser(userId = userInfo.userId)
     }
 
     @PutMapping("/me")
     fun updateCurrentUser(@RequestBody userRequest: UpdateUserRequest, @WithUserInfo userInfo: UserInfo) {
-        userService.updateUserDetails(
+        userService.updateCurrentUser(
                 updateUserRequest = userRequest,
                 userId = userInfo.userId
         )
@@ -44,6 +44,6 @@ class ExternalUserController(
 
     @DeleteMapping("/me")
     fun deleteCurrentUser(@WithUserInfo userInfo: UserInfo) {
-        userService.deleteUser(userId = userInfo.userId)
+        userService.deleteCurrentUser(userId = userInfo.userId)
     }
 }

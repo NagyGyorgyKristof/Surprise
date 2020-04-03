@@ -44,7 +44,10 @@ class UserService(
     }
 
     fun resendActivationEmail(request: ResendActivationEmailRequest) {
-        val user = userRepository.findOneByEmailIgnoreCase(request.email).checkExistenceByEmail(request.email)
+        val user = userRepository.findOneByEmailIgnoreCase(request.email)
+                .checkExistenceByEmail(request.email)
+                .checkEmailVerification()
+
         mailService.sendActivationEmail(user)
         log.debug("Resend activation email for User: {}", user)
     }
@@ -70,19 +73,21 @@ class UserService(
                 .toCoreUserInfoResponse()
     }
 
-    fun getUserDetails(userId: String): UserDetailsResponse {
+    fun getCurrentUser(userId: String): UserDetailsResponse {
         val user = userRepository.findById(userId).orNull().checkExistenceById(userId)
         return user.toUserDetailsResponse()
     }
 
-    fun updateUserDetails(updateUserRequest: UpdateUserRequest, userId: String) {
+    fun updateCurrentUser(updateUserRequest: UpdateUserRequest, userId: String) {
         val user = userRepository.findById(userId).orNull().checkExistenceById(userId)
 
-        if (updateUserRequest.username.isUsernameAlreadyUsed()) {
+        if (updateUserRequest.username.isUsernameAlreadyUsed()
+                        .and(updateUserRequest.username != user.username)) {
             throw UsernameAlreadyUsedException()
         }
 
-        if (updateUserRequest.email.isEmailAlreadyUsed()) {
+        if (updateUserRequest.email.isEmailAlreadyUsed()
+                        .and(updateUserRequest.email != user.email)) {
             throw EmailAlreadyUsedException()
         }
 
@@ -90,7 +95,7 @@ class UserService(
         log.debug("Changed Information for User: {}", updatedUser)
     }
 
-    fun deleteUser(userId: String) {
+    fun deleteCurrentUser(userId: String) {
         val user = userRepository.findById(userId).orNull().checkExistenceById(userId)
         userRepository.delete(user)
         log.debug("User has been deleted with userId: $userId")

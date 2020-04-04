@@ -4,7 +4,7 @@ services:
   database:
     image: postgres:12.1
     restart: always
-    container_name: surprise-db
+    container_name: surprise-postgres-db
     volumes:
       - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
       - database-data:/var/lib/postgresql/data/
@@ -14,6 +14,23 @@ services:
       POSTGRES_DB: surprise
     ports:
       - 5432:5432
+
+  neo4j:
+    image: neo4j:latest
+    container_name: surprise-neo4j-db
+    restart: unless-stopped
+    ports:
+      - 7474:7474
+      - 7687:7687
+    volumes:
+      - neo4j-data:/data
+    environment:
+      # Raise memory limits
+      - NEO4J_dbms_memory_pagecache_size=1G
+      - NEO4J_dbms.memory.heap.initial_size=1G
+      - NEO4J_dbms_memory_heap_max__size=1G
+
 volumes:
   postgres:
   database-data:
+  neo4j-data:

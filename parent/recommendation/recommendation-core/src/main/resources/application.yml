@@ -1,0 +1,40 @@
+server:
+  port: 9002
+  servlet:
+    context-path: /recommendation
+
+spring:
+  application:
+    name: recommendation-service
+  data:
+    neo4j:
+      username: neo4j
+      password: admin
+      uri: bolt://localhost:7687
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+
+surprise:
+  auth:
+    jwt:
+      header: Authorization
+      tokenPrefix: "Bearer "
+      expiration: 86400000
+      secret: lrTnWakwCNZlDo0i5l5xkngtQMN0zMle4PJpyl1cHkh8qXbKUblayqB7w2WfARi
+      rolePrefix: ROLE_
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    com.netflix.: info
+    org.apache.http: info
+    org.neo4j.ogm.drivers.bolt.request.BoltRequest: DEBUG
+
+
+
+
+

@@ -42,6 +42,7 @@
         <module>auth</module>
         <module>common</module>
         <module>user</module>
+        <module>recommendation</module>
     </modules>
 
     <dependencyManagement>

@@ -1,4 +1,4 @@
-package hu.ngykristof.surprise.recommendationcore.domain
+package hu.ngykristof.surprise.recommendationcore.data
 
 import org.neo4j.ogm.annotation.GeneratedValue
 import org.neo4j.ogm.annotation.Id

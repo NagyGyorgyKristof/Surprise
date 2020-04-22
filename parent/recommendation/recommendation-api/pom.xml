@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>hu.ngykristof.surprise</groupId>
-		<artifactId>user</artifactId>
+		<artifactId>recommendation</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 

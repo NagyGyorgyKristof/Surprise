@@ -1,4 +1,4 @@
-package hu.ngykristof.surprise.recommendationcore.domain
+package hu.ngykristof.surprise.recommendationcore.data
 
 import org.neo4j.ogm.annotation.GeneratedValue
 import org.neo4j.ogm.annotation.Id
@@ -15,8 +15,6 @@ class Users(
         var movies: List<Watched> = emptyList(),
         @Relationship(type = "FAVOURITE_GENRE", direction = Relationship.OUTGOING)
         var genres: List<Genres> = emptyList(),
-        @Relationship(type = "FAVOURITE_TAG", direction = Relationship.OUTGOING)
-        var tags: List<Tags> = emptyList(),
         @Relationship(type = "SIMILARITY", direction = Relationship.OUTGOING)
         var similarUsers: List<Users> = emptyList()
 

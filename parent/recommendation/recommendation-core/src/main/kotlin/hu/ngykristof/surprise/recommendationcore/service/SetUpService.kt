@@ -29,7 +29,6 @@ open class SetUpService(
     @Transactional
     open fun uploadNodeEntities() = applySetUpRepository {
         uploadMovies()
-        uploadTags()
         uploadGenres()
         uploadUsers()
     }
@@ -37,14 +36,12 @@ open class SetUpService(
     @Transactional
     open fun createIndexes() = applySetUpRepository {
         createIndexForMovies()
-        createIndexForTags()
         createIndexForUsers()
     }
 
     @Transactional
     open fun uploadBaseRelationships() = applySetUpRepository {
         upload_IN_GENRE_Relationship()
-        upload_TAGGED_WITH_Relationship()
         upload_WATCHED_Relationship()
     }
 

@@ -1,6 +1,6 @@
 package hu.ngykristof.surprise.recommendationcore.repository
 
-import hu.ngykristof.surprise.recommendationcore.domain.Movies
+import hu.ngykristof.surprise.recommendationcore.data.Movies
 import org.springframework.data.neo4j.annotation.Query
 import org.springframework.data.neo4j.repository.Neo4jRepository
 
@@ -33,25 +33,10 @@ interface SetUpRepository : Neo4jRepository<Movies, Long> {
     """)
     fun uploadUsers()
 
-
-    @Query("""
-        :auto USING PERIODIC COMMIT
-        LOAD CSV WITH HEADERS FROM 'file:///tags.csv' AS row
-        FIELDTERMINATOR ','
-        CREATE (:Tags {tagId: row.tagId, tag: row.tag});
-    """)
-    fun uploadTags()
-
-
     @Query("""
         CREATE INDEX FOR (n:Movies) ON (n.movieId);
     """)
     fun createIndexForMovies()
-
-    @Query("""
-        CREATE INDEX FOR (n:Tags) ON (n.tagId);
-    """)
-    fun createIndexForTags()
 
     @Query("""
         CREATE INDEX FOR (n:Users) ON (n.userId);
@@ -78,16 +63,4 @@ interface SetUpRepository : Neo4jRepository<Movies, Long> {
         MERGE (user)-[:WATCHED {rating: row.rating}]->(movie);
     """)
     fun upload_WATCHED_Relationship()
-
-
-    @Query("""
-        LOAD CSV WITH HEADERS FROM 'file:///movie_tags.csv' AS row
-        FIELDTERMINATOR ','
-        MATCH (movie:Movies {movieId: row.movieId})
-        MATCH (tags:Tags {tagId: row.tagId})
-        WHERE toFloat(row.relevance) > 0.75
-        MERGE (movie)-[:TAGGED_WITH]->(tags);
-    """)
-    fun upload_TAGGED_WITH_Relationship()
-
 }

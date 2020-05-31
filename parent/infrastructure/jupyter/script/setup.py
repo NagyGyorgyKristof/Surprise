@@ -454,6 +454,7 @@ LOAD CSV WITH HEADERS FROM "file:///movies_similarity.csv" AS row
 FIELDTERMINATOR '|'
 MATCH (movie1:Movies {movieId: row.id})
 MATCH (movie2:Movies {movieId: row.sim_movieId})
+WHERE toFloat(row.relevance) > 0.4
 MERGE (movie1)-[:MOVIE_SIMILAR {relevance: row.relevance}]->(movie2);
 """
 

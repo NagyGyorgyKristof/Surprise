@@ -16,10 +16,11 @@ public interface RecommendationRepository extends Neo4jRepository<Movies, Long> 
 
     @Query(
             "MATCH p=(u:Users)-[r:USER_SIMILAR]->(other:Users)-[ow:WATCHED]->(m:Movies)<-[ms:MOVIE_SIMILAR]-(watchedMovie:Movies)<-[wmw:WATCHED]-(u)" + "\n" +
-                    "WHERE u.userId=~$userId AND (NOT (u)-[:WATCHED]->(m)) AND toFloat(ow.rating)>7.0 AND toFloat(wmw.rating)>7.0 AND toFloat(ms.relevance)> 0.3 AND  toFloat(r.similarity)> 0.5" + "\n" +
-                    "WITH toFloat(m.rating_mean) AS RatingMean,u,m,ms.relevance AS RELEVANCE,watchedMovie" + "\n" +
-                    "RETURN DISTINCT u.userId, m.title AS title, RatingMean AS ratingMean, RELEVANCE, watchedMovie.title,  toInteger(m.movieId) AS movieId" + "\n" +
-                    "ORDER BY ratingMean DESC" + "\n" +
+                    "WHERE u.userId=~$userId AND (NOT (u)-[:WATCHED]->(m))" + "\n" +
+                    "WITH toFloat(m.rating_mean) AS RatingMean,u,m,toFloat(ms.relevance) AS UserSimilarity,toFloat(ow.rating) AS OtherUserRating,toFloat(wmw.rating) AS UserPersonalRating,toFloat(r.similarity) AS MovieSimilarity" + "\n" +
+                    "WITH (RatingMean + 10*UserSimilarity + 10*MovieSimilarity + OtherUserRating + UserPersonalRating)/50 AS RecommendationScore,u,m,RatingMean,UserSimilarity" + "\n" +
+                    "ORDER BY RecommendationScore DESC" + "\n" +
+                    "RETURN DISTINCT toInteger(m.movieId) AS movieId, m.title AS title,toFloat(RatingMean) AS ratingMean " + "\n" +
                     "LIMIT 10"
     )
     List<RecommendationResult> hybridRecommendation(@Param("userId") String userId);
@@ -27,20 +28,22 @@ public interface RecommendationRepository extends Neo4jRepository<Movies, Long> 
 
     @Query(
             "MATCH (m:Movies)<-[ms:MOVIE_SIMILAR]-(watchedMovie:Movies)<-[wmw:WATCHED]-(u)" + "\n" +
-                    "WHERE u.userId=~$userId AND (NOT (u)-[:WATCHED]->(m)) AND toFloat(wmw.rating)>7.0 AND toFloat(ms.relevance) > 0.4" + "\n" +
-                    "WITH toFloat(m.rating_mean) AS RatingMean,u,m,ms.relevance AS RELEVANCE,wmw.rating AS WMWRATING, watchedMovie" + "\n" +
-                    "RETURN DISTINCT u.userId, m.title AS title, RatingMean AS ratingMean, toInteger(m.movieId) AS movieId" + "\n" +
-                    "ORDER BY ratingMean DESC" + "\n" +
+                    "WHERE u.userId=~$userId AND (NOT (u)-[:WATCHED]->(m))" + "\n" +
+                    "WITH toFloat(m.rating_mean) AS RatingMean,u,m,toFloat(ms.relevance) AS MovieSimilarity,toFloat(wmw.rating) AS UserPersonalRating, watchedMovie" + "\n" +
+                    "WITH (10*MovieSimilarity + UserPersonalRating + RatingMean)/30 AS RecommendationScore, u,m,RatingMean,MovieSimilarity,UserPersonalRating,watchedMovie" + "\n" +
+                    "ORDER BY RecommendationScore DESC" + "\n" +
+                    "RETURN DISTINCT toInteger(m.movieId) AS movieId, m.title AS title,toFloat(RatingMean) AS ratingMean " + "\n" +
                     "LIMIT 10"
     )
     List<RecommendationResult> contentBasedRecommendation(@Param("userId") String userId);
 
     @Query(
             "MATCH p=(u:Users)-[r:USER_SIMILAR]->(other:Users)-[ow:WATCHED]->(m:Movies)" + "\n" +
-                    "WHERE u.userId=~$userId AND (NOT (u)-[:WATCHED]->(m)) AND toFloat(ow.rating)>7.0 AND toFloat(r.similarity)> 0.6" + "\n" +
-                    "WITH toFloat(m.rating_mean) AS RatingMean,u,m,r.similarity AS RELEVANCE" + "\n" +
-                    "RETURN DISTINCT m.title AS title, RatingMean AS ratingMean,  toInteger(m.movieId) AS movieId" + "\n" +
-                    "ORDER BY ratingMean DESC" + "\n" +
+                    "WHERE u.userId=~$userId AND (NOT (u)-[:WATCHED]->(m))" + "\n" +
+                    "WITH toFloat(m.rating_mean) AS RatingMean,u,m,r.similarity AS MovieSimilarity,  toFloat(ow.rating) AS UserPersonalRating" + "\n" +
+                    "WITH (10*MovieSimilarity + UserPersonalRating + RatingMean)/30 AS RecommendationScore,m,RatingMean" + "\n" +
+                    "ORDER BY RecommendationScore DESC" + "\n" +
+                    "RETURN DISTINCT toInteger(m.movieId) AS movieId, m.title AS title,toFloat(RatingMean) AS ratingMean " + "\n" +
                     "LIMIT 10"
     )
     List<RecommendationResult> userBasedRecommendation(@Param("userId") String userId);

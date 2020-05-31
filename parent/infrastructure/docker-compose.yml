@@ -15,26 +15,41 @@ services:
     ports:
       - 5432:5432
 
-      #neo4j:
-      # image: neo4j:latest
-      #container_name: surprise-neo4j-db
-      #restart: unless-stopped
-      #ports:
-      # - 7474:7474
-      #- 7687:7687
-      #volumes:
-      # - neo4j-data:/data
-      # - ./neo4j/import:/import
-      #- ./neo4j/conf:/conf
-      #- ./neo4j/plugins:/plugins
-      #environment:
-      #Raise memory limits
-      # - NEO4J_dbms_memory_pagecache_size=1G
-      # - NEO4J_dbms.memory.heap.initial_size=1G
-      # - NEO4J_dbms_memory_heap_max__size=3G
-      #- NEO4J_dbms_security_procedures_unrestricted=algo.*
+#  neo4j:
+#    image: neo4j:4.0.1
+#    container_name: surprise-neo4j-db
+#    restart: unless-stopped
+#    ports:
+#     - 7474:7474
+#     - 7687:7687
+#    volumes:
+#     - ./neo4j/data:/data
+#     - ./neo4j/import:/import
+#     - ./neo4j/conf:/conf
+#     - ./neo4j/plugins:/plugins
+#    environment:
+#        #Raise memory limits
+#     - NEO4J_dbms.memory.pagecache.size=1G
+#     - NEO4J_dbms.memory.heap.initial_size=1G
+#     - NEO4J_dbms.memory.heap.max_size=3G
+#     - NEO4J_dbms.connector.bolt.address=0.0.0.0:7687
+#     - NEO4J_dbms.connector.bolt.enabled=true
+
+  jupyter:
+    build:
+      context: ./jupyter/docker
+    command: start-notebook.sh --NotebookApp.token=''
+    container_name: surprise-jupyter
+    ports:
+        - "8888:8888"
+    volumes:
+        - "./jupyter/notebooks:/notebooks"
+        - "./jupyter/data:/data"
+        - "./jupyter/script:/script"
+         #TODO kiszerverzni ezt egy kornyezeti valtozoba!
+        - "/Users/Kristof/Library/Application Support/Neo4j Desktop/Application/neo4jDatabases/database-948f53b4-7217-4271-9707-a101333af14b/installation-4.0.1/import:/import"
 
 volumes:
   postgres:
   database-data:
-  #neo4j-data:
+  neo4j-data:

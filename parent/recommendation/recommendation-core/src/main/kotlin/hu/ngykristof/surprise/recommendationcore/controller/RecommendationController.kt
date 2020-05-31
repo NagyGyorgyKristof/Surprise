@@ -14,10 +14,22 @@ class RecommendationController(
 ) {
 
 
-//    @GetMapping("/{userId}")
-//    fun getUserBasedCollaborativeFilterRecommendation(@PathVariable("userId") userId: String): List<PersonalRecommendation> {
-//        val result = recommendationRepository.userBasedCollaborativeFilteringRecommendation(userId)
-//        return result.map { it.toPersonalRecommendation() }
-//    }
+    @GetMapping("/user-based/{userId}")
+    fun getUserBasedRecommendation(@PathVariable("userId") userId: String): List<PersonalRecommendation> {
+        val result = recommendationRepository.userBasedRecommendation(userId)
+        return result.map { it.toPersonalRecommendation() }
+    }
+
+    @GetMapping("/content-based/{userId}")
+    fun getContentBasedRecommendation(@PathVariable("userId") userId: String): List<PersonalRecommendation> {
+        val result = recommendationRepository.contentBasedRecommendation(userId)
+        return result.map { it.toPersonalRecommendation() }
+    }
+
+    @GetMapping("/hybrid/{userId}")
+    fun getHybridRecommendation(@PathVariable("userId") userId: String): List<PersonalRecommendation> {
+        val result = recommendationRepository.hybridRecommendation(userId)
+        return result.map { it.toPersonalRecommendation() }
+    }
 
 }

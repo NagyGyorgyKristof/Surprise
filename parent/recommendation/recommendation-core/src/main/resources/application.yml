@@ -26,6 +26,8 @@ surprise:
       expiration: 86400000
       secret: lrTnWakwCNZlDo0i5l5xkngtQMN0zMle4PJpyl1cHkh8qXbKUblayqB7w2WfARi
       rolePrefix: ROLE_
+  task:
+    movie-update-frequency-cron-expression: "0 0 12 1 * ?" #At 12:00:00pm, on the 1st day, every month
 
 logging:
   level:

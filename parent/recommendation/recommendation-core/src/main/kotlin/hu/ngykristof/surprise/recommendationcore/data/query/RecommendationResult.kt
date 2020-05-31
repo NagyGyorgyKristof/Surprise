@@ -3,10 +3,8 @@ package hu.ngykristof.surprise.recommendationcore.data.query
 import org.springframework.data.neo4j.annotation.QueryResult
 
 @QueryResult
-open class UserBasedRecommendation() {
-    var userId: String = ""
+class RecommendationResult {
+    var movieId: Int = 0
     var title: String = ""
     var ratingMean: Double = 0.0
-    var recommendationScore: Double = 0.0
 }
-

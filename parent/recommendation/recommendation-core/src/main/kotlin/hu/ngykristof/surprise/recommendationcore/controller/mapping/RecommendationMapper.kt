@@ -1,13 +1,12 @@
 package hu.ngykristof.surprise.recommendationcore.controller.mapping
 
 import hu.ngykristof.surprise.recommendationapi.dto.PersonalRecommendation
-import hu.ngykristof.surprise.recommendationcore.data.query.UserBasedRecommendation
+import hu.ngykristof.surprise.recommendationcore.data.query.RecommendationResult
 
-fun UserBasedRecommendation.toPersonalRecommendation(): PersonalRecommendation {
+fun RecommendationResult.toPersonalRecommendation(): PersonalRecommendation {
     return PersonalRecommendation(
-            userId = this.userId,
             title = this.title,
             ratingMean = this.ratingMean,
-            recommendationScore = this.recommendationScore
+            movieId = this.movieId
     )
 }

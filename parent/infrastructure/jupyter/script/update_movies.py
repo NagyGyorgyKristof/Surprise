@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[4]:
 
 
 import pandas as pd
@@ -15,7 +15,7 @@ from collections import OrderedDict
 import json
 import datetime
 from io import BytesIO, StringIO
-from csv import writer 
+from csv import writer
 from ast import literal_eval
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.metrics.pairwise import linear_kernel, cosine_similarity
@@ -27,87 +27,92 @@ from sklearn.metrics.pairwise import linear_kernel, cosine_similarity
 graph = Graph("bolt://host.docker.internal:7687", auth=("neo4j", "admin"), bolt=False)
 
 
-# In[3]:
+# In[5]:
+
+
+BASE_URL='https://api.themoviedb.org/3/movie/'
+
+
+# In[6]:
 
 
 #helper function for get new movies as Dataframe
 def get_new_movies():
-    pagination_response = requests.get('https://api.themoviedb.org/3/movie/now_playing?api_key=8e9078a24db79a8b98e327f3e62276a6&language=en-US&page=1').json()
+    pagination_response = requests.get(BASE_URL +'upcoming?api_key=8e9078a24db79a8b98e327f3e62276a6&language=en-US&page=1').json()
     num_pages = pagination_response['total_pages']
     row_movies_list=[]
 
-    #TODO user the num_pages instead of the hardcoded 5 in the for loop
-    for page in range(1, 5):
+    for page in range(1, num_pages+1):
         si= str(page)
-        response = requests.get('https://api.themoviedb.org/3/movie/now_playing?api_key=8e9078a24db79a8b98e327f3e62276a6&language=en-US&page='+si+'')
+        response = requests.get(BASE_URL +'now_playing?api_key=8e9078a24db79a8b98e327f3e62276a6&language=en-US&page='+si+'')
         json_response= response.json()
         row_movies_list.append(pd.DataFrame(json_response['results']))
 
     return pd.concat(row_movies_list)
 
 
-# In[4]:
+# In[7]:
 
 
 new_movies=get_new_movies()
 new_movies.shape
 
 
-# In[5]:
+# In[8]:
 
 
 #factory method for get movie details as Dataframe
 def movies_factory(movieId):
-    request=Request('https://api.themoviedb.org/3/movie/'+movieId+'?api_key=8e9078a24db79a8b98e327f3e62276a6&language=en-US')
+    request=Request(BASE_URL + movieId + '?api_key=8e9078a24db79a8b98e327f3e62276a6&language=en-US')
     response = urlopen(request)
     elevations = response.read()
     data = json.loads(elevations)
     return pd.json_normalize(data)
 
 
-# In[6]:
+# In[9]:
 
 
 # helper function for get keywords as raw json
 def get_keywords_by_movieId(movieId):
-    response = requests.get('https://api.themoviedb.org/3/movie/'+movieId+'/keywords?api_key=8e9078a24db79a8b98e327f3e62276a6')
+    response = requests.get(BASE_URL + movieId + '/keywords?api_key=8e9078a24db79a8b98e327f3e62276a6')
     json_response= response.json()
     return json_response['keywords']
-    
 
 
-# In[7]:
+
+# In[10]:
 
 
 #factory method for getting movie keywords as Dataframe
 def keywords_factory(movieId):
-    data = [[movieId, get_keywords_by_movieId(str(movieId))]] 
-  
-    return pd.DataFrame(data, columns = ['id', 'keywords']) 
+    data = [[movieId, get_keywords_by_movieId(str(movieId))]]
+
+    return pd.DataFrame(data, columns = ['id', 'keywords'])
 
 
-# In[8]:
+# In[11]:
 
 
 # helper function for get cast and crew as raw json
 def get_cast_and_crew_by_movieId(movieId):
-    response = requests.get('https://api.themoviedb.org/3/movie/'+movieId+'/credits?api_key=8e9078a24db79a8b98e327f3e62276a6')
+    response = requests.get(BASE_URL + movieId + '/credits?api_key=8e9078a24db79a8b98e327f3e62276a6')
     json_response= response.json()
     return json_response['cast'], json_response['crew'];
 
 
-# In[9]:
+# In[12]:
 
 
 #factory method for getting movie credits as Dataframe
 def credits_factory(movieId):
     cast,crew = get_cast_and_crew_by_movieId(str(movieId))
-    data = [[movieId,cast,crew]] 
-  
-    return pd.DataFrame(data, columns = ['id', 'cast','crew']) 
+    data = [[movieId,cast,crew]]
+
+    return pd.DataFrame(data, columns = ['id', 'cast','crew'])
 
 
-# In[10]:
+# In[13]:
 
 
 #helper function for create the appropriate df by the factoryMethod
@@ -119,10 +124,10 @@ def get_df_by_factoryMethod(factoryMethod):
         df_list.append(df)
 
     return pd.concat(df_list)
-     
 
 
-# In[11]:
+
+# In[14]:
 
 
 md=      get_df_by_factoryMethod(movies_factory)

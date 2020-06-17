@@ -23,7 +23,7 @@ from sklearn.metrics.pairwise import linear_kernel, cosine_similarity
 
 
 
-graph = Graph("bolt://host.docker.internal:7687", auth=("neo4j", "admin"), bolt=False)
+graph = Graph("bolt://host.docker.internal:7687", auth=("neo4j", "admin"),bolt=False)
 
 print('started')
 
@@ -56,7 +56,7 @@ ratings= pd.read_csv(ratings_url)
 # In[6]:
 
 
-# if the small dataset is required
+# talan torolni kell ezt!!!
 md = md[md['id'].isin(links_small)]
 
 
@@ -260,7 +260,6 @@ md['keywords'] = md['keywords'].apply(lambda x: [str.lower(i.replace(" ", "")) f
 
 md['soup'] = md ['keywords']+md['cast'] + md['director'] + md['genres']
 md['soup'] = md['soup'].apply(lambda x: ' '.join(x))
-#md['soup']= md['soup'].str.decode('iso-8859-1').str.encode('utf8')
 
 
 # In[26]:
@@ -322,7 +321,7 @@ md.head()
 def execute_query(statement):
     tx = graph.begin(autocommit=True)
     tx.evaluate(statement)
-    
+
 
 
 # In[32]:
@@ -351,7 +350,7 @@ USING PERIODIC COMMIT
 LOAD CSV WITH HEADERS FROM "file:///movies.csv" AS row
 FIELDTERMINATOR '|'
 with row where row.id is not null
-MERGE (:Movies {movieId: row.id, title: row.title, rating_mean: row.wr,imdb_id: row.imdb_id,year: row.year,soup: row.soup});
+MERGE (:Movies {movieId: row.id, title: row.title, rating_mean: row.wr,year: row.year,soup: row.soup});
 """
 
 execute_query(movie_import_statement)
@@ -382,7 +381,7 @@ CREATE INDEX FOR (n:Movies) ON (n.movieId);
 execute_query(movie_index_statement)
 
 
-# In[36]:
+# In[ ]:
 
 
 user_index_statement = """
@@ -392,7 +391,7 @@ CREATE INDEX FOR (n:Users) ON (n.userId);
 execute_query(user_index_statement)
 
 
-# In[37]:
+# In[36]:
 
 
 users_movies_df.to_csv('/import/users_movies.csv', sep='|', header=True, index=False)
@@ -409,7 +408,7 @@ MERGE (user)-[:WATCHED {rating: row.rating}]->(movie);
 execute_query(user_import_statement)
 
 
-# In[38]:
+# In[37]:
 
 
 users_movies_df.to_csv('/import/users_movies.csv', sep='|', header=True, index=False)
@@ -426,7 +425,7 @@ MERGE (user)-[:WATCHED {rating: row.rating}]->(movie);
 execute_query(user_movies_import_statement)
 
 
-# In[39]:
+# In[38]:
 
 
 movies_genres.to_csv('/import/movies_genres.csv', sep='|', header=True, index=False)
@@ -443,7 +442,7 @@ MERGE (movie)-[:IN_GENRE]->(genres);
 execute_query(movies_genres_import_statement)
 
 
-# In[40]:
+# In[39]:
 
 
 movies_similarity.to_csv('/import/movies_similarity.csv', sep='|', header=True, index=False)
@@ -454,14 +453,13 @@ LOAD CSV WITH HEADERS FROM "file:///movies_similarity.csv" AS row
 FIELDTERMINATOR '|'
 MATCH (movie1:Movies {movieId: row.id})
 MATCH (movie2:Movies {movieId: row.sim_movieId})
-WHERE toFloat(row.relevance) > 0.4
 MERGE (movie1)-[:MOVIE_SIMILAR {relevance: row.relevance}]->(movie2);
 """
 
 execute_query(movies_similarity_statement)
 
 
-# In[41]:
+# In[40]:
 
 
 users_similarity_statement = """
@@ -489,7 +487,7 @@ SET   s.similarity = sim
 execute_query(users_similarity_statement)
 
 
-# In[42]:
+# In[41]:
 
 
 user_favourite_genre_statement = """
@@ -506,6 +504,12 @@ MERGE (u)-[:FAVOURITE_GENRE]->(g)
 """
 
 execute_query(user_favourite_genre_statement)
+
+
+# In[ ]:
+
+
+
 
 
 # In[ ]:

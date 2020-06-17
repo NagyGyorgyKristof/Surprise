@@ -1,4 +1,4 @@
-package hu.ngykristof.surprise.recommendationcore.data.query
+package hu.ngykristof.surprise.recommendationcore.data
 
 import org.springframework.data.neo4j.annotation.QueryResult
 

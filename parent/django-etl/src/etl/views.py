@@ -4,8 +4,10 @@ from django.conf.urls import url, include
 
 @api_view(['GET','POST'])
 def start_up(request):
+    #TODO update_movies.py mevhivasa
     return Response({"message": "Hello it is the start up etl flow : )"})
 
 @api_view(['GET','POST'])
 def update_movies(request):
+    #TODO update_movies.py mevhivasa
     return Response({"message": "Hello it is the update movies etl flow : )"})

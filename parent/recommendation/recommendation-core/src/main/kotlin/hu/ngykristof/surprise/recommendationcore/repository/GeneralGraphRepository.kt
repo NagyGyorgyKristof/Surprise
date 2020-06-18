@@ -7,12 +7,11 @@ import org.springframework.stereotype.Repository
 
 @Repository
 
-interface GeneralRepository : Neo4jRepository<Movies, Long> {
+interface GeneralGraphRepository : Neo4jRepository<Movies, Long> {
 
     @Query("""
-        MATCH (n)
-        RETURN n IS NULL AS isEmpty
-        LIMIT 1;
+      MATCH (n)
+      RETURN count(n);
     """)
-    fun isGraphDatabaseEmpty(): Boolean
+    fun getNodeCount(): Int
 }

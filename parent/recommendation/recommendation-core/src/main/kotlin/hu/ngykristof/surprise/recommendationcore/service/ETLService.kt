@@ -1,23 +1,24 @@
 package hu.ngykristof.surprise.recommendationcore.service
 
-import hu.ngykristof.surprise.recommendationcore.extensions.executeCommand
+import hu.ngykristof.surprise.commonscore.util.logger
 import hu.ngykristof.surprise.recommendationcore.util.asyncTask
 import org.springframework.stereotype.Service
+import java.time.OffsetDateTime
 
 @Service
-class ETLService() {
+class ETLService {
 
-    companion object {
-        private const val PYTHON_CONTAINER_NAME = "surprise-jupyter"
-        private const val START_SET_UP_ETL_FLOW_COMMAND: String = "docker exec -it $PYTHON_CONTAINER_NAME /script/setup.py"
-        private const val START_UPDATE_MOVIES_ETL_FLOW_COMMAND: String = "docker exec -it $PYTHON_CONTAINER_NAME /script/update_movies.py"
-    }
+    val logger = logger()
+
+    //TODO mostantol django EtlService-t kell hivni REST-en o fogja majd futtatni a python scripteket
 
     fun runSetUpETLFlow() = asyncTask {
-        START_SET_UP_ETL_FLOW_COMMAND.executeCommand()
+        //TODO restClinet hivas a django EtlService app fele (api/start-up)
+        logger.debug("Setup ETL flow was started at : ${OffsetDateTime.now()}")
     }
 
     fun runUpdateMoviesETLFlow() = asyncTask {
-        START_UPDATE_MOVIES_ETL_FLOW_COMMAND.executeCommand()
+        //TODO restClinet hivas a django EtlService app fele (api/update-movies)
+        logger.debug("Update movie ETL flow was started at : ${OffsetDateTime.now()}")
     }
 }

@@ -25,7 +25,7 @@ from sklearn.metrics.pairwise import linear_kernel, cosine_similarity
 
 graph = Graph("bolt://host.docker.internal:7687", auth=("neo4j", "admin"),bolt=False)
 
-print('started')
+print('Python: Startup ETL flow was started')
 
 
 # In[3]:

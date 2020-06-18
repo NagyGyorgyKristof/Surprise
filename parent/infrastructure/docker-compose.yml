@@ -49,17 +49,6 @@ services:
       #TODO kiszerverzni ezt egy kornyezeti valtozoba!
       - "/Users/Kristof/Library/Application Support/Neo4j Desktop/Application/neo4jDatabases/database-d45cad43-5a17-4556-92af-e931e2000be5/installation-4.0.1/import:/import"
 
-#TODO probalgatni meg, hogy innen is menjen a django
-#  django:
-#    build:
-#      context: ./django
-#    container_name: surprise-django
-#    command: python ./django/src/manage.py runserver 0.0.0.0:8000
-#    volumes:
-#      - ./django:/code
-#      - ./django/script:/script
-#    ports:
-#      - "8000:8000"
 
 volumes:
   postgres:

@@ -19,6 +19,7 @@ from csv import writer
 from ast import literal_eval
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.metrics.pairwise import linear_kernel, cosine_similarity
+import sys
 
 
 # In[2]:
@@ -29,31 +30,47 @@ graph = Graph("bolt://host.docker.internal:7687", auth=("neo4j", "admin"), bolt=
 
 # In[5]:
 
+DEBUG_PROFILE='debug'
+PROD_PROFILE='prod'
+
+#Getting the current profile from the first argument
+CURRENT_PROFILE= sys.argv[1]
+print('==> CURRENT_PROFILE is:' + CURRENT_PROFILE)
 
 BASE_URL='https://api.themoviedb.org/3/movie/'
-
+API_KEY='8e9078a24db79a8b98e327f3e62276a6'
 
 # In[6]:
 
 
 #helper function for get new movies as Dataframe
 def get_new_movies():
-    pagination_response = requests.get(BASE_URL +'upcoming?api_key=8e9078a24db79a8b98e327f3e62276a6&language=en-US&page=1').json()
+    pagination_response = requests.get(BASE_URL +'now_playing?api_key='+API_KEY+'&language=en-US&page=1').json()
     num_pages = pagination_response['total_pages']
     row_movies_list=[]
 
-    for page in range(1, num_pages+1):
-        si= str(page)
-        response = requests.get(BASE_URL +'now_playing?api_key=8e9078a24db79a8b98e327f3e62276a6&language=en-US&page='+si+'')
-        json_response= response.json()
-        row_movies_list.append(pd.DataFrame(json_response['results']))
+    if CURRENT_PROFILE == DEBUG_PROFILE:
+        for page in range(1, 3):
+            spage= str(page)
+            response = requests.get(BASE_URL +'now_playing?api_key='+API_KEY+'&language=en-US&page='+spage+'')
+            json_response= response.json()
+            row_movies_list.append(pd.DataFrame(json_response['results']))
 
-    return pd.concat(row_movies_list)
+        return pd.concat(row_movies_list)
+
+    if CURRENT_PROFILE == PROD_PROFILE:
+            for page in range(1, num_pages):
+                spage= str(page)
+                response = requests.get(BASE_URL +'now_playing?api_key='+API_KEY+'&language=en-US&page='+spage+'')
+                json_response= response.json()
+                row_movies_list.append(pd.DataFrame(json_response['results']))
+
+            return pd.concat(row_movies_list)
 
 
 # In[7]:
 
-
+print('==> Get new movies')
 new_movies=get_new_movies()
 new_movies.shape
 
@@ -63,7 +80,7 @@ new_movies.shape
 
 #factory method for get movie details as Dataframe
 def movies_factory(movieId):
-    request=Request(BASE_URL + movieId + '?api_key=8e9078a24db79a8b98e327f3e62276a6&language=en-US')
+    request=Request(BASE_URL + movieId + '?api_key='+API_KEY+'&language=en-US')
     response = urlopen(request)
     elevations = response.read()
     data = json.loads(elevations)
@@ -75,7 +92,7 @@ def movies_factory(movieId):
 
 # helper function for get keywords as raw json
 def get_keywords_by_movieId(movieId):
-    response = requests.get(BASE_URL + movieId + '/keywords?api_key=8e9078a24db79a8b98e327f3e62276a6')
+    response = requests.get(BASE_URL + movieId + '/keywords?api_key='+API_KEY+'')
     json_response= response.json()
     return json_response['keywords']
 
@@ -96,9 +113,9 @@ def keywords_factory(movieId):
 
 # helper function for get cast and crew as raw json
 def get_cast_and_crew_by_movieId(movieId):
-    response = requests.get(BASE_URL + movieId + '/credits?api_key=8e9078a24db79a8b98e327f3e62276a6')
+    response = requests.get(BASE_URL + movieId + '/credits?api_key='+API_KEY+'')
     json_response= response.json()
-    return json_response['cast'], json_response['crew'];
+    return json_response['cast'], json_response['crew']
 
 
 # In[12]:
@@ -129,16 +146,22 @@ def get_df_by_factoryMethod(factoryMethod):
 
 # In[14]:
 
-
+print('==> Get new movie details')
 md=      get_df_by_factoryMethod(movies_factory)
+
+print('==> Get credits')
 credits= get_df_by_factoryMethod(credits_factory)
+
+print('==> Get keywords')
 keywords=get_df_by_factoryMethod(keywords_factory)
 
-
+print('==> All new movie date has been arrived successfully')
 # In[12]:
 
 
 ####################################### MOVIE ETL##############################################################
+print('==> Movie ETL flow has been started')
+
 md['genres'] = md['genres'].fillna('[]').apply(str).apply(literal_eval).apply(lambda x: [i['name'] for i in x] if isinstance(x, list) else [])
 md['year'] = pd.to_datetime(md['release_date'], errors='coerce').apply(lambda x: str(x).split('-')[0] if x != np.nan else np.nan)
 md = md.drop(['adult','belongs_to_collection','budget','homepage','original_language','original_title','revenue','runtime','spoken_languages','poster_path','production_companies','release_date','production_countries','video','overview','tagline','popularity','belongs_to_collection.id','belongs_to_collection.name','belongs_to_collection.poster_path','belongs_to_collection.backdrop_path'], axis = 1)
@@ -303,7 +326,8 @@ def execute_query(statement):
 # In[29]:
 
 
-# complete the existing database with the new movies
+print('==> Complete the existing database with the new movies')
+
 md.to_csv('/import/movies.csv', sep='|', header=True, index=False)
 
 movie_import_statement = """
@@ -386,7 +410,7 @@ output.close()
 
 # In[36]:
 
-
+print('==> Update movies_similarity relationship')
 movies_similarity.to_csv('/import/movies_similarity.csv', sep='|', header=True, index=False)
 
 movies_similarity_statement = """
@@ -400,6 +424,8 @@ MERGE (movie1)-[:MOVIE_SIMILAR {relevance: row.relevance}]->(movie2);
 
 execute_query(movies_similarity_statement)
 
+
+print('==> Update movies ETL flow has been finished successfully')
 
 # In[ ]:
 

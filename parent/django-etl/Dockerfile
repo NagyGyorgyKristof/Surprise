@@ -1,5 +1,4 @@
 FROM python:3
-#FROM jupyter/datascience-notebook talan igy is mukodik majd !
 
 ENV PYTHONUNBUFFERED 1
 RUN mkdir /code

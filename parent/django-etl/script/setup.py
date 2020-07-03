@@ -8,6 +8,8 @@ import pandas as pd
 import numpy as np
 from py2neo import Graph
 import os
+import sys
+
 
 
 import datetime
@@ -25,39 +27,51 @@ from sklearn.metrics.pairwise import linear_kernel, cosine_similarity
 
 graph = Graph("bolt://host.docker.internal:7687", auth=("neo4j", "admin"),bolt=False)
 
-print('Python: Startup ETL flow was started')
+print('==> Python: Startup ETL flow was started')
+
+DEBUG_PROFILE='debug'
+PROD_PROFILE='prod'
+
+#Getting the current profile from the first argument
+CURRENT_PROFILE= sys.argv[1]
+print('==> CURRENT_PROFILE is: ' + CURRENT_PROFILE)
 
 
 # In[3]:
 
-
+print('==> Getting movies_metadata.csv')
 movies_url="http://167.71.3.40/movies_metadata.csv"
 md =pd.read_csv(movies_url)
 
 md = md.loc[md['id'].str.isalnum()]
 md['id']=md['id'].astype('int')
+print('==> movies_metadata.csv has been arrived.')
+
 
 
 # In[4]:
 
-
+print('==> Getting links_small.csv')
 link_small_url="http://167.71.3.40/links_small.csv"
 link_small= pd.read_csv(link_small_url)
 links_small = link_small[link_small['tmdbId'].notnull()]['tmdbId'].astype('int')
+print('links_small.csv has been arrived.')
 
 
 # In[5]:
 
-
+print('==> Getting ratings.csv')
 ratings_url="http://167.71.3.40/ratings.csv"
 ratings= pd.read_csv(ratings_url)
+print('==> ratings.csv has been arrived.')
 
 
 # In[6]:
 
 
-# talan torolni kell ezt!!!
-md = md[md['id'].isin(links_small)]
+if CURRENT_PROFILE == DEBUG_PROFILE:
+    print('==> Small data set is enabled!')
+    md = md[md['id'].isin(links_small)]
 
 
 # In[7]:
@@ -109,7 +123,7 @@ md = md.drop(['adult','belongs_to_collection','budget','homepage','original_lang
 
 # In[11]:
 
-
+# Use IMDB recommendation for calculate the weighted average vote.
 def weighted_rating(x):
     v = x['vote_count']
     R = x['vote_average']
@@ -139,7 +153,7 @@ def get_movie_genres(movieId):
 
 # In[13]:
 
-
+#Append rows with csv_writer duet to performance issues
 output = StringIO()
 csv_writer = writer(output)
 csv_writer.writerow(['movieId','genres'])
@@ -148,7 +162,8 @@ for x in md['id'].tolist():
     for row in get_movie_genres(x).iterrows():
         csv_writer.writerow(row[1])
 
-output.seek(0) # we need to get back to the start of the BytesIO
+# we need to get back to the start of the BytesIO
+output.seek(0)
 movies_genres = pd.read_csv(output)
 output.flush()
 output.close()
@@ -159,14 +174,17 @@ output.close()
 
 ################################   Keywords, Credit ###########################################
 
+print('==> Getting keywords.csv')
 keywords_url="http://167.71.3.40/keywords.csv"
 keywords= pd.read_csv(keywords_url)
+print('==> keywords.csv has benn arrived')
 
-
+print('==> Getting credits.csv')
 credits_url="http://167.71.3.40/credits.csv"
 credits= pd.read_csv(credits_url)
+print('==> credits.csv has benn arrived')
 
-print('ketwords, credits')
+
 
 
 # In[15]:
@@ -277,7 +295,6 @@ md.set_index(md['id'],inplace=True)
 cols = md.index.values
 inx = md.index
 movies_sim = pd.DataFrame(cosine_sim, columns=cols, index=inx)
-movies_sim.head()
 
 
 # In[28]:
@@ -290,7 +307,7 @@ def get_similar(movieId):
 
 # In[29]:
 
-
+#Append rows with csv_writer duet to performance issues
 output = StringIO()
 csv_writer = writer(output)
 
@@ -298,8 +315,8 @@ csv_writer.writerow(['id','sim_movieId','relevance'])
 for x in movies_sim.index.tolist():
     for row in get_similar(x).iterrows():
         csv_writer.writerow(row[1])
-
-output.seek(0) # we need to get back to the start of the BytesIO
+# we need to get back to the start of the BytesIO
+output.seek(0)
 movies_similarity = pd.read_csv(output)
 output.flush()
 output.close()
@@ -310,14 +327,12 @@ output.close()
 
 md = md.drop(['genres','vote_average','vote_count','cast','crew','keywords','cast_size','crew_size','director'], axis = 1)
 
-md.head()
-
-
 # In[31]:
 
 
 #/////////////////////////////////////////NEO4J IMPORT////////////////////////////////////////////////////////////////
 
+print('==> NEO4J import has benn started')
 def execute_query(statement):
     tx = graph.begin(autocommit=True)
     tx.evaluate(statement)
@@ -373,21 +388,26 @@ execute_query(user_import_statement)
 
 # In[35]:
 
-
+drop_movie_index_statement= """
+DROP INDEX ON :Movies(movieId)
+"""
 movie_index_statement = """
 CREATE INDEX FOR (n:Movies) ON (n.movieId);
 """
 
+execute_query(drop_movie_index_statement)
 execute_query(movie_index_statement)
 
 
 # In[ ]:
 
-
+drop_user_index_statement= """
+DROP INDEX ON :Users(userId)
+"""
 user_index_statement = """
 CREATE INDEX FOR (n:Users) ON (n.userId);
 """
-
+execute_query(drop_user_index_statement)
 execute_query(user_index_statement)
 
 
@@ -457,7 +477,7 @@ MERGE (movie1)-[:MOVIE_SIMILAR {relevance: row.relevance}]->(movie2);
 """
 
 execute_query(movies_similarity_statement)
-
+print('==> All import statement has been executed successfully')
 
 # In[40]:
 
@@ -504,6 +524,9 @@ MERGE (u)-[:FAVOURITE_GENRE]->(g)
 """
 
 execute_query(user_favourite_genre_statement)
+
+print('==> All graph build statement has been executed successfully')
+print('==> Setup ETL flow has been finished successfully')
 
 
 # In[ ]:

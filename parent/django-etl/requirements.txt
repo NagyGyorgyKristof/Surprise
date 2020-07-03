@@ -2,3 +2,6 @@ Django>=2.0,<3.0
 djangorestframework
 py2neo
 scikit-learn
+pandas
+numpy
+requests

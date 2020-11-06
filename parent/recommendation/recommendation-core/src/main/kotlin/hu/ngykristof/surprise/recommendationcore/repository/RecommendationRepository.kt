@@ -47,7 +47,15 @@ interface RecommendationRepository : Neo4jRepository<Movies, Long> {
                     RETURN DISTINCT toInteger(m.moviId) AS movieId, m.title AS title,toFloat(RatingMean) AS ratingMean 
                     LIMIT 10
     """
-
     )
     fun userBasedRecommendation(@Param("userId") userId: String): List<RecommendationResult>
+
+
+    @Query("""
+        MATCH (user:Users {userId: ${'$'}{userId}})
+        MATCH (movie:Movies {movieId: ${'$'}{movieId}})
+        MERGE (user)-[:WATCHED {rating: ${'$'}{rating}}]->(movie);
+    """
+    )
+    fun createRating(userId: String, movieId: String, rating: Double)
 }

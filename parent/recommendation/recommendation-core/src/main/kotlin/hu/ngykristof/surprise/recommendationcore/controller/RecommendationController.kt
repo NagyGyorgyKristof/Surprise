@@ -1,11 +1,10 @@
 package hu.ngykristof.surprise.recommendationcore.controller
 
 import hu.ngykristof.surprise.recommendationapi.dto.PersonalRecommendation
+import hu.ngykristof.surprise.recommendationcore.controller.dto.CreateRatingRequest
 import hu.ngykristof.surprise.recommendationcore.controller.mapping.toPersonalRecommendation
 import hu.ngykristof.surprise.recommendationcore.repository.RecommendationRepository
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 
 @RestController
@@ -32,4 +31,12 @@ class RecommendationController(
         return result.map { it.toPersonalRecommendation() }
     }
 
+    @PostMapping("/ratings/{userId}")
+    fun createRating(@PathVariable("userId") userId: String, @RequestBody createRatingRequest: CreateRatingRequest) {
+        recommendationRepository.createRating(
+                userId = userId,
+                movieId = createRatingRequest.movieId,
+                rating = createRatingRequest.rating
+        )
+    }
 }

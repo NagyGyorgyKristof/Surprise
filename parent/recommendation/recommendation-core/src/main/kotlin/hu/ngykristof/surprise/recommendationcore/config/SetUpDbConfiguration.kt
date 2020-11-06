@@ -19,7 +19,7 @@ class SetUpDbConfiguration(
     fun setUpGraphDatabase() {
         if (generalGraphService.isGraphEmpty()) {
             log.info("Starting up the neo4j db at the first time")
-            etlService.runSetUpETLFlow()
+            etlService.runSetupETLFlow()
         }
     }
 }

@@ -19,26 +19,24 @@ class ETLService(
 
     val logger = logger()
 
-    //TODO mostantol django EtlService-t kell hivni REST-en o fogja majd futtatni a python scripteket
-
-    fun runSetUpETLFlow() = asyncTask {
-        //TODO elkerni a current profile-t es ugy az alapjan elkuldeni!
+    fun runSetupETLFlow() = asyncTask {
         executeETLFlow(ETLConstants.START_UP_URL)
+
         logger.debug("Setup ETL flow was started at : ${OffsetDateTime.now()}")
     }
 
     fun runUpdateMoviesETLFlow() = asyncTask {
-        //TODO elkerni a current profile-t es ugy az alapjan elkuldeni!
         executeETLFlow(ETLConstants.UPDATE_MOVIES_URL)
+
         logger.debug("Update movie ETL flow was started at : ${OffsetDateTime.now()}")
     }
 
 
-    private suspend fun executeETLFlow(etlFlowUrl: String) {
+    private suspend fun executeETLFlow(url: String) {
         webClientBuilder.build()
                 .post()
                 .uri { uriBuilder: UriBuilder ->
-                    uriBuilder.path(etlFlowUrl)
+                    uriBuilder.path(url)
                             .queryParam(ETLConstants.PROFILE_PARAM_KEY, getActiveProfile())
                             .build()
                 }

@@ -20,5 +20,4 @@ class InternalUserController(
         return userService.validateUserLogin(validateUserLoginRequest)
     }
 
-
 }

@@ -3,7 +3,7 @@ jdk: oraclejdk11
 sudo: false
 script:
 - cd parent
-- "./mvnw -q clean package -DskipTests=true"
+- "./mvnw -q clean compile -DskipTests=true"
 - cd ..
 - sonar-scanner
 

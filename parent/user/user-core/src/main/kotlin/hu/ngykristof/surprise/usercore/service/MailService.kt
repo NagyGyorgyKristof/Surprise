@@ -38,7 +38,6 @@ class MailService(
         try {
             val message = MimeMessageHelper(mimeMessage, isMultipart, StandardCharsets.UTF_8.name())
             message.setTo(to)
-            //TODO to property!
             message.setFrom("surprise@localhost")
             message.setSubject(subject)
             message.setText(content, isHtml)

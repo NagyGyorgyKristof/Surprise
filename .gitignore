@@ -23,3 +23,6 @@
 hs_err_pid*
 /.idea/
 /parent/infrastructure/neo4j/import/
+
+#dataK
+*.csv

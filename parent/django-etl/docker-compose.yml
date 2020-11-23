@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    container_name: surprise-jango
+    command: python ./src/manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+      - ./script:/script
+      #TODO kiszerverzni ezt egy kornyezeti valtozoba!
+      - /Users/Kristof/Library/Application Support/Neo4j Desktop/Application/neo4jDatabases/database-d45cad43-5a17-4556-92af-e931e2000be5/installation-4.0.1/import:/import
+
+    ports:
+      - "8000:8000"

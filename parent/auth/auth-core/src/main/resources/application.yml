@@ -7,13 +7,13 @@ spring:
   application:
     name: auth-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/surprise?currentSchema=auth
-    username: root
-    password: root
+    url: url
+    username: username
+    password: password
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
 
 eureka:
   client:
@@ -29,7 +29,7 @@ surprise:
       tokenPrefixSize: 7
       accessTokenValidityInMins: 5
       refreshTokenValidityInDays: 30
-      secret: lrTnWakwCNZlDo0i5l5xkngtQMN0zMle4PJpyl1cHkh8qXbKUblayqB7w2WfARi
+      secret: secret
       rolePrefix: ROLE_
     token:
       cleanup-frequency-cron-expression: "0 0 9 30 * ?" #At 09:00:00am, on the 30th day, every month

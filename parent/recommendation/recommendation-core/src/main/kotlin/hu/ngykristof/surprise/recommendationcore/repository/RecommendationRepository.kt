@@ -34,15 +34,14 @@ interface RecommendationRepository : Neo4jRepository<Movies, Long> {
                     RETURN DISTINCT toInteger(m.movieId) AS movieId, m.title AS title,toFloat(RatingMean) AS ratingMean 
                     LIMIT 10
     """
-
     )
     fun contentBasedRecommendation(@Param("userId") userId: String): List<RecommendationResult>
 
     @Query("""
          MATCH p=(u:Users)-[r:USER_SIMILAR]->(other:Users)-[ow:WATCHED]->(m:Movies)
                     WHERE u.userId=~${'$'}{userId} AND (NOT (u)-[:WATCHED]->(m)
-                    WITH toFloat(m.rating_mean) AS RatingMean,u,m,r.similarity S MovieSimilarity,  toFloat(ow.rating) AS UserPersonalRating
-                    WITH (10*MovieSimilarity + UserPersonalRating + RatingMean)/30 AS RecommendationScore,m,RatingMea
+                    WITH toFloat(m.rating_mean) AS RatingMean,u,m,r.similarity AS UserSimilarity,  toFloat(ow.rating) AS UserPersonalRating
+                    WITH (10*UserSimilarity + UserPersonalRating + RatingMean)/30 AS RecommendationScore,m,RatingMea
                     ORDER BY RecommendationScore DES
                     RETURN DISTINCT toInteger(m.moviId) AS movieId, m.title AS title,toFloat(RatingMean) AS ratingMean 
                     LIMIT 10

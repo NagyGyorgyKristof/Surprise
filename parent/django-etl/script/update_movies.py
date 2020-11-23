@@ -159,7 +159,7 @@ print('==> All new movie date has been arrived successfully')
 # In[12]:
 
 
-####################################### MOVIE ETL##############################################################
+####################################### MOVIE ETL ##############################################################
 print('==> Movie ETL flow has been started')
 
 md['genres'] = md['genres'].fillna('[]').apply(str).apply(literal_eval).apply(lambda x: [i['name'] for i in x] if isinstance(x, list) else [])

@@ -8,9 +8,9 @@ spring:
     name: recommendation-service
   data:
     neo4j:
-      username: neo4j
-      password: admin
-      uri: bolt://localhost:7687
+      username: username
+      password: password
+      uri: url
 
 eureka:
   client:
@@ -24,7 +24,7 @@ surprise:
       header: Authorization
       tokenPrefix: "Bearer "
       expiration: 86400000
-      secret: lrTnWakwCNZlDo0i5l5xkngtQMN0zMle4PJpyl1cHkh8qXbKUblayqB7w2WfARi
+      secret: secret
       rolePrefix: ROLE_
   task:
     movie-update-frequency-cron-expression: "0 0 12 1 * ?" #At 12:00:00pm, on the 1st day, every month

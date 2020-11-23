@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  web:
+    build: ""
+    container_name: surprise-jango
+    command: python ./src/manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+      - ./script:/script
+      - ${NEO4j_IMPORT}:/import
+    ports:
+      - "8000:8000"

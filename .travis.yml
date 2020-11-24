@@ -1,11 +1,6 @@
 language: java
 jdk: oraclejdk11
 sudo: false
-script:
-- cd parent
-- ./mvnw -q clean compile sonar:sonar -DskipTests=true -Dsonar.projectKey=NagyGyorgyKristof_Surprise
-- cd ..
-
 notifications:
   email: false
   slack:
@@ -16,3 +11,8 @@ addons:
     organization: "ngy"
     token:
       secure: zMY9UUwLwIPIyGb++PQ8dIuK/mUNX4vNYEH+WhB8Lkcf+9olF9HDF8rw1eKnHEfp2In98N2Xatk4gaYPv1P8NOuMSvoVJZSjs2g13aL5F+L1Rr6D3cnu9ue7hjihaonWfEYCI6QRcXCOt3uzPVX7gy3YyYLabz7dpplMnXEeiJWGGArn2VLQsgPvXFZotgj83AQDpE5nw6fxGgc1mXRLZsjUJhDMtpZM6S6i8ETwl5ciU1aS2YLYHijnRed9yf0vVtkLoHLoXYGg8E2aCN0CG0jmP9VQiFGPBu+gyetjCS6mpn5erlP56/kzah3crDJKQXj1eq/ZKrbhgt6FDjFGNMRqVRCLIR3VXQKhD0nX5F/3d504EayWHDQ1ZRA9aMMqI8+8WJ2SdYNwt5Q7S7iEZW80CqueyL++B5kfb7hAdhmu2k0g+j9zTVJN8cr7QqBWlWbXsC0L/rZ15x9fL4G9HEW35hHStLomu2sdsvXfyPMVYAcIB2vMZfAa6xXC61GVxE+LxtHTw6GW+fFoPRbsaY5+breJ2btURghd0D7WaBs8J3CNmNYCG4W7t5Cy0r/En6OO+oS+frDjQlxD7o3kpZPWTsYsjNvxIJ9CXdleortBzo4krrFrc6xaJU/gNzVe/Ge4r9mi/pElafL+/lPplbTXpgmP8nY8x818XGy3f70=
+
+script:
+  - cd parent
+  - ./mvnw -q clean compile sonar:sonar -DskipTests=true -Dsonar.projectKey=NagyGyorgyKristof_Surprise
+  - cd ..

@@ -40,8 +40,8 @@ print('==> CURRENT_PROFILE is: ' + CURRENT_PROFILE)
 # In[3]:
 
 print('==> Getting movies_metadata.csv')
-movies_url="http://167.71.3.40/movies_metadata.csv"
-md =pd.read_csv(movies_url)
+movies="/initdata/movies_metadata.csv"
+md =pd.read_csv(movies)
 
 md = md.loc[md['id'].str.isalnum()]
 md['id']=md['id'].astype('int')
@@ -52,8 +52,8 @@ print('==> movies_metadata.csv has been arrived.')
 # In[4]:
 
 print('==> Getting links_small.csv')
-link_small_url="http://167.71.3.40/links_small.csv"
-link_small= pd.read_csv(link_small_url)
+link_smalll="/initdata/links_small.csv"
+link_small= pd.read_csv(link_small)
 links_small = link_small[link_small['tmdbId'].notnull()]['tmdbId'].astype('int')
 print('links_small.csv has been arrived.')
 
@@ -61,8 +61,8 @@ print('links_small.csv has been arrived.')
 # In[5]:
 
 print('==> Getting ratings.csv')
-ratings_url="http://167.71.3.40/ratings.csv"
-ratings= pd.read_csv(ratings_url)
+ratings="/initdata/ratings.csv"
+ratings= pd.read_csv(ratings)
 print('==> ratings.csv has been arrived.')
 
 
@@ -175,13 +175,13 @@ output.close()
 ################################   Keywords, Credit ###########################################
 
 print('==> Getting keywords.csv')
-keywords_url="http://167.71.3.40/keywords.csv"
-keywords= pd.read_csv(keywords_url)
+keywords="/initdata/keywords.csv"
+keywords= pd.read_csv(keywords)
 print('==> keywords.csv has benn arrived')
 
 print('==> Getting credits.csv')
-credits_url="http://167.71.3.40/credits.csv"
-credits= pd.read_csv(credits_url)
+credits="/initdata/credits.csv"
+credits= pd.read_csv(credits)
 print('==> credits.csv has benn arrived')
 
 

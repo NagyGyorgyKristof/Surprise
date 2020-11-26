@@ -32,7 +32,7 @@ def get_new_movies():
     num_pages = pagination_response['total_pages']
     row_movies_list=[]
 
-    for page in range(1, 3):
+    for page in range(1, num_pages):
         spage= str(page)
         response = requests.get(BASE_URL +'now_playing?api_key='+API_KEY+'&language=en-US&page='+spage+'')
         json_response= response.json()

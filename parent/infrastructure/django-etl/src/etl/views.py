@@ -12,7 +12,7 @@ def start_up(request):
     profile = request.GET.get('profile', None)
     if profile is not None:
         logger.info('Movie setup has been started!')
-        os.system('python3 script/setup.py ')
+        os.system('python3 script/setup.py')
         logger.info('Movie setup has been finished successfully!')
 
         return Response({"message": "Movie setup was successful"})
@@ -24,7 +24,7 @@ def update_movies(request):
     profile = request.GET.get('profile', None)
     if profile is not None:
         logger.info('Movie update has been started!')
-        os.system('python3 script/update_movies.py ')
+        os.system('python3 script/update_movies.py')
         logger.info('Movie update has benn finished successfully')
 
         return Response({"message": "Movie update was successful"})

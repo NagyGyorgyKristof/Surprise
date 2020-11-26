@@ -31,10 +31,10 @@ class TokenProvider(
                 .sign(Algorithm.HMAC512(jwtConfig.secret.toByteArray()))
     }
 
-    fun createRefreshToken(CoreUserInfo: CoreUserInfoResponse): RefreshTokenResult {
+    fun createRefreshToken(coreUserInfo: CoreUserInfoResponse): RefreshTokenResult {
         return RefreshTokenResult(
                 value = RandomUtil.generateRefreshToken(),
-                userId = CoreUserInfo.userId,
+                userId = coreUserInfo.userId,
                 expirationDate = OffsetDateTime.now().plusDays(jwtConfig.refreshTokenValidityInDays.toLong())
         )
     }

@@ -1,0 +1,44 @@
+server:
+  port: 9002
+  servlet:
+    context-path: /recommendation
+
+spring:
+  application:
+    name: recommendation-service
+  data:
+    neo4j:
+      username: username
+      password: password
+      uri: url
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+
+surprise:
+  auth:
+    jwt:
+      header: Authorization
+      tokenPrefix: "Bearer "
+      expiration: 86400000
+      secret: secret
+      rolePrefix: ROLE_
+  task:
+    movie-update-frequency-cron-expression: "0 0 12 1 * ?" #At 12:00:00pm, on the 1st day, every month
+  etl:
+    django-base-url: baseurl
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    com.netflix.: info
+    org.apache.http: info
+    org.neo4j.ogm.drivers.bolt.request.BoltRequest: DEBUG
+
+
+
+
+

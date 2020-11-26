@@ -33,7 +33,7 @@ class UserService(
             throw UsernameAlreadyUsedException()
         }
 
-        if (newUserRequest.email.isEmailAlreadyUsed()) {
+        if (newUserRequest.email.isReserved()) {
             throw EmailAlreadyUsedException()
         }
 
@@ -46,7 +46,6 @@ class UserService(
     fun resendActivationEmail(request: ResendActivationEmailRequest) {
         val user = userRepository.findOneByEmailIgnoreCase(request.email)
                 .checkExistenceByEmail(request.email)
-                .checkEmailVerification()
 
         mailService.sendActivationEmail(user)
         log.debug("Resend activation email for User: {}", user)
@@ -67,7 +66,8 @@ class UserService(
         val user = userRepository
                 .findOneByUsername(validateUserLoginRequest.username)
 
-        return user.checkUsername()
+        return user
+                .checkUsername()
                 .checkPasswordCorrectness(validateUserLoginRequest.password)
                 .checkEmailVerification()
                 .toCoreUserInfoResponse()
@@ -86,7 +86,7 @@ class UserService(
             throw UsernameAlreadyUsedException()
         }
 
-        if (updateUserRequest.email.isEmailAlreadyUsed()
+        if (updateUserRequest.email.isReserved()
                         .and(updateUserRequest.email != user.email)) {
             throw EmailAlreadyUsedException()
         }
@@ -108,7 +108,7 @@ class UserService(
         return removeNonActivatedUser(existingUser)
     }
 
-    private fun String.isEmailAlreadyUsed(): Boolean {
+    private fun String.isReserved(): Boolean {
         val existingUser = userRepository.findOneByEmailIgnoreCase(this) ?: return false
         return removeNonActivatedUser(existingUser)
     }

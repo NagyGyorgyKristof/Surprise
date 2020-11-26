@@ -29,3 +29,4 @@ build/
 
 ### VS Code ###
 .vscode/
+/infrastructure/jupyter/notebooks/.ipynb_checkpoints/update_movies-checkpoint.ipynb

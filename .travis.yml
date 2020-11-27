@@ -14,5 +14,5 @@ addons:
 
 script:
   - cd parent
-  - ./mvnw -q clean compile -DskipTests=true
+  - ./mvnw -q clean compile
   - cd ..

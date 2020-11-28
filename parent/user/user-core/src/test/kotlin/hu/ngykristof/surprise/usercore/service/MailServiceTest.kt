@@ -4,7 +4,6 @@ import hu.ngykristof.surprise.usercore.test.createMockUserEntity
 import io.mockk.coEvery
 import io.mockk.coVerifyAll
 import io.mockk.mockk
-import io.mockk.slot
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.context.MessageSource
@@ -44,7 +43,6 @@ internal class MailServiceTest {
         val activationEmailTemplate = "mail/activationEmail"
         val activationTitle = "email.activation.title"
         val mockMimeMessage: MimeMessage = mockk(relaxed = true)
-        val mimeMessageSlot = slot<MimeMessage>()
 
         mailService.sendActivationEmail(mockUserEntity)
 

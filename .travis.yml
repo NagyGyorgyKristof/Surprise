@@ -16,6 +16,3 @@ script:
   - cd parent
   - ./mvnw -q clean compile -DskipTests=true
   - cd ..
-
-after_success:
-  - bash <(curl -s https://codecov.io/bash)

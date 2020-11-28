@@ -1,4 +1,4 @@
-package hu.ngykristof.surprise.authcore.config
+package hu.ngykristof.surprise.usercore.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

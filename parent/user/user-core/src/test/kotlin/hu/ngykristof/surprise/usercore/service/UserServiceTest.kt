@@ -2,6 +2,7 @@ package hu.ngykristof.surprise.usercore.service
 
 import hu.ngykristof.surprise.commonscore.extensions.orNull
 import hu.ngykristof.surprise.userapi.dto.NewUserRequest
+import hu.ngykristof.surprise.userapi.dto.loginvalidation.Role.USER
 import hu.ngykristof.surprise.usercore.domain.UserEntity
 import hu.ngykristof.surprise.usercore.error.*
 import hu.ngykristof.surprise.usercore.repository.UserRepository
@@ -154,7 +155,7 @@ internal class UserServiceTest {
         val coreUserInfo = userService.validateUserLogin(mockValidateUserLoginRequest)
 
         assertEquals(mockUserEntity.username, coreUserInfo.username)
-        assertEquals(mockUserEntity.roles, coreUserInfo.roles)
+        assertEquals(coreUserInfo.roles.first(), USER)
     }
 
     @Test
@@ -335,7 +336,7 @@ internal class UserServiceTest {
         val coreUserInfoForToken = userService.getCoreUserInfoForToken(mockUserId)
 
         assertEquals(coreUserInfoForToken.username, mockUserEntity.username)
-        assertEquals(coreUserInfoForToken.roles, mockUserEntity.roles)
+        assertEquals(coreUserInfoForToken.roles.first(), USER)
     }
 
     @Test

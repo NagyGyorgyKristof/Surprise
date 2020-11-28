@@ -5,6 +5,7 @@ import hu.ngykristof.surprise.userapi.dto.ResendActivationEmailRequest
 import hu.ngykristof.surprise.userapi.dto.UpdateUserRequest
 import hu.ngykristof.surprise.userapi.dto.loginvalidation.Role
 import hu.ngykristof.surprise.userapi.dto.loginvalidation.ValidateUserLoginRequest
+import hu.ngykristof.surprise.usercore.domain.RoleEntity
 import hu.ngykristof.surprise.usercore.domain.UserEntity
 
 fun createMockNewUserRequest() = NewUserRequest(
@@ -20,7 +21,7 @@ fun createMockUserEntity(
         isActive: Boolean = true,
         username: String = "username",
         email: String = "test@email.com"
-) = UserEntity(isActive = isActive, username = username, email = email)
+) = UserEntity(isActive = isActive, username = username, email = email, roles = listOf(RoleEntity.USER))
 
 fun createMockResendActivationEmailRequest() = ResendActivationEmailRequest(
         email = "test@email.com"

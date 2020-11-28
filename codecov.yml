@@ -1,0 +1,39 @@
+codecov:
+  require_ci_to_pass: true
+
+coverage:
+  precision: 3
+  round: up
+  range: "40...75"
+
+parsers:
+  gcov:
+    branch_detection:
+      conditional: yes
+      loop: yes
+      method: no
+      macro: no
+
+comment:
+  layout: "reach,diff,flags,files,footer"
+  behavior: default
+  require_changes: no
+
+ignore:
+  - "**/*Application.kt"
+  - "**/common/**/*.kt"
+  - "**/task/*.kt"
+  - "**/domain/*.kt"
+  - "**/test/**/*.kt"
+  - "**/test/controller/**/*.kt"
+  - "**/report/**/*.kt"
+  - "**/controller/**/*.kt"
+  - "**/config/*.kt"
+  - "**/controller/*.kt"
+  - "**/util/*Executor.kt"
+  - "**/EtlCommunication*.kt"
+  - "**/config/**/*.kt"
+  - "**/data/*.kt"
+  - "**/jwt/*.kt"
+  - "**/data/**/*.kt"
+  - "**/dto/Personal*.kt"

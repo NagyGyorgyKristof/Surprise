@@ -1,14 +1,12 @@
 package hu.ngykristof.surprise.usercore.service
 
 import hu.ngykristof.surprise.commonscore.extensions.orNull
+import hu.ngykristof.surprise.userapi.dto.NewUserRequest
 import hu.ngykristof.surprise.usercore.domain.UserEntity
 import hu.ngykristof.surprise.usercore.error.*
 import hu.ngykristof.surprise.usercore.repository.UserRepository
 import hu.ngykristof.surprise.usercore.test.*
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.slot
-import io.mockk.verify
+import io.mockk.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -40,19 +38,11 @@ internal class UserServiceTest {
         val userEntitySlot = slot<UserEntity>()
 
         every { userRepository.findOneByUsername(mockNewUserRequest.username) } returns null
-        every { userRepository.findOneByEmailIgnoreCase(mockNewUserRequest.email) } returns null
-        every { userRepository.save(ofType(UserEntity::class)) } answers { firstArg() }
+        prepareRegistration(mockNewUserRequest)
 
         userService.registerNewUser(mockNewUserRequest)
 
-        verify { userRepository.save(capture(userEntitySlot)) }
-        verify { mailService.sendActivationEmail(ofType(UserEntity::class)) }
-
-        assertEquals(mockNewUserRequest.email, userEntitySlot.captured.email)
-        assertEquals(mockNewUserRequest.username, userEntitySlot.captured.username)
-        assertEquals(mockNewUserRequest.firstName, userEntitySlot.captured.firstName)
-        assertEquals(mockNewUserRequest.lastName, userEntitySlot.captured.lastName)
-        assertFalse(userEntitySlot.captured.isActive)
+        verifyRegistration(userEntitySlot, mockNewUserRequest)
     }
 
     @Test
@@ -62,19 +52,11 @@ internal class UserServiceTest {
         val userEntitySlot = slot<UserEntity>()
 
         every { userRepository.findOneByUsername(mockNewUserRequest.username) } returns mockUserEntity
-        every { userRepository.findOneByEmailIgnoreCase(mockNewUserRequest.email) } returns null
-        every { userRepository.save(ofType(UserEntity::class)) } answers { firstArg() }
+        prepareRegistration(mockNewUserRequest)
 
         userService.registerNewUser(mockNewUserRequest)
 
-        verify { userRepository.save(capture(userEntitySlot)) }
-        verify { mailService.sendActivationEmail(ofType(UserEntity::class)) }
-
-        assertEquals(mockNewUserRequest.email, userEntitySlot.captured.email)
-        assertEquals(mockNewUserRequest.username, userEntitySlot.captured.username)
-        assertEquals(mockNewUserRequest.firstName, userEntitySlot.captured.firstName)
-        assertEquals(mockNewUserRequest.lastName, userEntitySlot.captured.lastName)
-        assertFalse(userEntitySlot.captured.isActive)
+        verifyRegistration(userEntitySlot, mockNewUserRequest)
     }
 
     @Test
@@ -99,14 +81,7 @@ internal class UserServiceTest {
 
         userService.registerNewUser(mockNewUserRequest)
 
-        verify { userRepository.save(capture(userEntitySlot)) }
-        verify { mailService.sendActivationEmail(ofType(UserEntity::class)) }
-
-        assertEquals(mockNewUserRequest.email, userEntitySlot.captured.email)
-        assertEquals(mockNewUserRequest.username, userEntitySlot.captured.username)
-        assertEquals(mockNewUserRequest.firstName, userEntitySlot.captured.firstName)
-        assertEquals(mockNewUserRequest.lastName, userEntitySlot.captured.lastName)
-        assertFalse(userEntitySlot.captured.isActive)
+        verifyRegistration(userEntitySlot, mockNewUserRequest)
     }
 
     @Test
@@ -371,4 +346,22 @@ internal class UserServiceTest {
 
         assertThrows<UserNotFoundException> { userService.getCoreUserInfoForToken(mockUserId) }
     }
+
+    private fun verifyRegistration(userEntitySlot: CapturingSlot<UserEntity>, mockNewUserRequest: NewUserRequest) {
+        verify { userRepository.save(capture(userEntitySlot)) }
+        verify { mailService.sendActivationEmail(ofType(UserEntity::class)) }
+
+        assertEquals(mockNewUserRequest.email, userEntitySlot.captured.email)
+        assertEquals(mockNewUserRequest.username, userEntitySlot.captured.username)
+        assertEquals(mockNewUserRequest.firstName, userEntitySlot.captured.firstName)
+        assertEquals(mockNewUserRequest.lastName, userEntitySlot.captured.lastName)
+        assertFalse(userEntitySlot.captured.isActive)
+    }
+
+
+    private fun prepareRegistration(mockNewUserRequest: NewUserRequest) {
+        every { userRepository.findOneByEmailIgnoreCase(mockNewUserRequest.email) } returns null
+        every { userRepository.save(ofType(UserEntity::class)) } answers { firstArg() }
+    }
+
 }

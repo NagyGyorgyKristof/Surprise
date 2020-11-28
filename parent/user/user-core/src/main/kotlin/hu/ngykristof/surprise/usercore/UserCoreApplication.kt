@@ -1,4 +1,4 @@
-package hu.ngykristof.surprise.usercore
+    package hu.ngykristof.surprise.usercore
 
 import hu.ngykristof.surprise.commonscore.config.jwt.EnableJwtConfig
 import org.springframework.boot.autoconfigure.SpringBootApplication

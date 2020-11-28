@@ -101,6 +101,15 @@ class UserService(
         log.debug("User has been deleted with userId: $userId")
     }
 
+    fun removeNotActivatedUsers() {
+        userRepository
+                .findAllByIsActiveIsFalseAndActivationKeyIsNotNullAndCreationDateBefore(OffsetDateTime.now().minusDays(3))
+                .forEach { userRepository.delete(it) }
+    }
+
+    fun getCoreUserInfoForToken(userId: String) = userRepository.findById(userId).orNull()?.toCoreUserInfoResponse()
+            ?: throw UserNotFoundException("No user was found for this userId: $userId")
+
     //region support extensions
 
     private fun String.isUsernameAlreadyUsed(): Boolean {
@@ -120,13 +129,13 @@ class UserService(
         return this
     }
 
+
     private fun UserEntity.checkEmailVerification(): UserEntity {
         if (!this.isActive) {
             throw NotVerifiedEmailException()
         }
         return this
     }
-
 
     private fun removeNonActivatedUser(existingUser: UserEntity): Boolean {
         if (existingUser.isActive) {
@@ -146,25 +155,9 @@ class UserService(
         return this ?: throw UserNotFoundException("No user was found for this userId :$userId")
     }
 
-    private fun UserEntity?.checkExistenceByResetKey(resetKey: String): UserEntity {
-        return this ?: throw UserNotFoundException("No user was found for this reset key: $resetKey")
-    }
-
-    private fun UserEntity?.checkExistenceByActivationKey(activationKey: String): UserEntity {
-        return this ?: throw UserNotFoundException("No user was found for this activation key: $activationKey")
-    }
-
     private fun UserEntity?.checkExistenceByEmail(email: String): UserEntity {
         return this ?: throw UserNotFoundException("No user was found for this email: $email")
     }
+
     //endregion
-
-    fun removeNotActivatedUsers() {
-        userRepository
-                .findAllByIsActiveIsFalseAndActivationKeyIsNotNullAndCreationDateBefore(OffsetDateTime.now().minusDays(3))
-                .forEach { userRepository.delete(it) }
-    }
-
-    fun getCoreUserInfoForToken(userId: String) = userRepository.findById(userId).orNull()?.toCoreUserInfoResponse()
-            ?: throw UserNotFoundException("No user was found for this userId: $userId")
 }

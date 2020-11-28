@@ -1,4 +1,4 @@
-package hu.ngykristof.surprise.recommendationcore.service
+package hu.ngykristof.surprise.recommendationcore.config
 
 class ETLConstants {
 

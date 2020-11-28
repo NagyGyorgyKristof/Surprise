@@ -63,17 +63,6 @@ class AuthService(
         return tokenResult
     }
 
-    private fun createTokensForUser(coreUserInfo: CoreUserInfoResponse): TokenResult {
-        val accessToken = tokenProvider.createAccessToken(coreUserInfo)
-        val refreshTokenResult = tokenProvider.createRefreshToken(coreUserInfo)
-
-        tokenRepository.save(refreshTokenResult.toRefreshTokenEntity())
-
-        return TokenResult(
-                accessTokenValue = accessToken,
-                refreshTokenValue = refreshTokenResult.value
-        )
-    }
 
     fun logout(userId: String) {
         tokenRepository.findOneByUserId(userId)?.invalidate()
@@ -101,28 +90,40 @@ class AuthService(
     }
 
     //region support extensions
-    fun RefreshTokenEntity.verifyExpirationDate(): RefreshTokenEntity {
+    private fun RefreshTokenEntity.verifyExpirationDate(): RefreshTokenEntity {
         tokenProvider.verifyRefreshToken(this.expirationDate)
         return this
     }
 
-    fun String.verifyToken() {
+    private fun String.verifyToken() {
         tokenProvider.verifyAccessToken(this)
     }
 
-    fun RefreshTokenEntity?.verifyExistence(): RefreshTokenEntity {
+    private fun RefreshTokenEntity?.verifyExistence(): RefreshTokenEntity {
         return this ?: throw TokenVerificationException("Invalid refreshToken")
     }
 
-    fun RefreshTokenEntity.invalidate(): RefreshTokenEntity {
+    private fun RefreshTokenEntity.invalidate(): RefreshTokenEntity {
         tokenRepository.delete(this)
         tokenRepository.flush()
         return this
     }
 
-    fun List<RefreshTokenEntity>.invalidateAll() {
+    private fun List<RefreshTokenEntity>.invalidateAll() {
         tokenRepository.deleteAll(this)
         tokenRepository.flush()
     }
     //endregion
+
+    private fun createTokensForUser(coreUserInfo: CoreUserInfoResponse): TokenResult {
+        val accessToken = tokenProvider.createAccessToken(coreUserInfo)
+        val refreshTokenResult = tokenProvider.createRefreshToken(coreUserInfo)
+
+        tokenRepository.save(refreshTokenResult.toRefreshTokenEntity())
+
+        return TokenResult(
+                accessTokenValue = accessToken,
+                refreshTokenValue = refreshTokenResult.value
+        )
+    }
 }

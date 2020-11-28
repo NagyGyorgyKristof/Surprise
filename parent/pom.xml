@@ -35,7 +35,7 @@
         <iban4j.version>3.2.1</iban4j.version>
         <kotlinx-coroutines.version>1.2.1</kotlinx-coroutines.version>
         <mockk.version>1.10.2</mockk.version>
-        <jacoco.version>0.7.9</jacoco.version>
+        <jacoco.version>0.8.6</jacoco.version>
     </properties>
 
     <modules>

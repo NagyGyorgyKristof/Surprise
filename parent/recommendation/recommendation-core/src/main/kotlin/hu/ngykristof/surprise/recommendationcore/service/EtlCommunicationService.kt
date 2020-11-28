@@ -8,7 +8,7 @@ import org.springframework.web.reactive.function.client.awaitExchange
 import org.springframework.web.util.UriBuilder
 
 @Service
-class CommunicationService(
+class EtlCommunicationService(
         private val webClientBuilder: WebClient.Builder
 ) {
 

@@ -1,7 +1,7 @@
 package hu.ngykristof.surprise.recommendationcore.service
 
-import hu.ngykristof.surprise.recommendationcore.service.ETLConstants.Companion.START_UP
-import hu.ngykristof.surprise.recommendationcore.service.ETLConstants.Companion.UPDATE_MOVIES
+import hu.ngykristof.surprise.recommendationcore.config.ETLConstants.Companion.START_UP
+import hu.ngykristof.surprise.recommendationcore.config.ETLConstants.Companion.UPDATE_MOVIES
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
@@ -9,10 +9,10 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-internal class ETLServiceTest {
+internal class EtlServiceTest {
 
-    private lateinit var communicationService: CommunicationService
-    private lateinit var etlService: ETLService
+    private lateinit var etlCommunicationService: EtlCommunicationService
+    private lateinit var etlService: EtlService
 
     companion object {
         const val ETL_BASE_URL = "ETL_BASE_URL"
@@ -20,8 +20,8 @@ internal class ETLServiceTest {
 
     @BeforeEach
     fun setUp() {
-        this.communicationService = mockk(relaxed = true)
-        this.etlService = ETLService(communicationService, ETL_BASE_URL)
+        this.etlCommunicationService = mockk(relaxed = true)
+        this.etlService = EtlService(etlCommunicationService, ETL_BASE_URL)
     }
 
     @Test
@@ -30,7 +30,7 @@ internal class ETLServiceTest {
 
         etlService.runSetupETLFlow()
 
-        verify { communicationService.executeRequest(capture(urlSlot)) }
+        verify { etlCommunicationService.executeRequest(capture(urlSlot)) }
 
         assertEquals("$ETL_BASE_URL/$START_UP", urlSlot.captured)
     }
@@ -41,7 +41,7 @@ internal class ETLServiceTest {
 
         etlService.runUpdateMoviesETLFlow()
 
-        verify { communicationService.executeRequest(capture(urlSlot)) }
+        verify { etlCommunicationService.executeRequest(capture(urlSlot)) }
 
         assertEquals("$ETL_BASE_URL/$UPDATE_MOVIES", urlSlot.captured)
     }

@@ -1,8 +1,10 @@
 package hu.ngykristof.surprise.recommendationcore.service
 
+import hu.ngykristof.surprise.recommendationapi.dto.CreateRatingRequest
 import hu.ngykristof.surprise.recommendationcore.data.PersonalRecommendationEntity
 import hu.ngykristof.surprise.recommendationcore.repository.RecommendationRepository
 import hu.ngykristof.surprise.recommendationcore.service.message.CreateRatingMessage
+import hu.ngykristof.surprise.recommendationcore.service.message.toMessage
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
@@ -81,6 +83,19 @@ internal class RecommendationServiceTest {
         val createRatingMessage = CreateRatingMessage(movieId, rating)
 
         recommendationService.createRating(userId, createRatingMessage)
+
+        verify { recommendationRepository.createRating(userId, movieId, rating) }
+        confirmVerified(recommendationRepository)
+    }
+
+    @Test
+    fun createRatingMapping() {
+        val userId = "userId"
+        val movieId = "movieId"
+        val rating = 5.0
+        val createRatingMessage = CreateRatingRequest(movieId, rating)
+
+        recommendationService.createRating(userId, createRatingMessage.toMessage())
 
         verify { recommendationRepository.createRating(userId, movieId, rating) }
         confirmVerified(recommendationRepository)

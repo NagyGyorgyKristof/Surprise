@@ -1,4 +1,4 @@
-package hu.ngykristof.surprise.recommendationcore.controller.dto
+package hu.ngykristof.surprise.recommendationapi.dto
 
 class CreateRatingRequest(
         val movieId: String,

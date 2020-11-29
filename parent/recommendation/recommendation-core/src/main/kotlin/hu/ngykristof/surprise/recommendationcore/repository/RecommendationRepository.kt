@@ -1,7 +1,7 @@
 package hu.ngykristof.surprise.recommendationcore.repository;
 
 import hu.ngykristof.surprise.recommendationcore.data.Movies;
-import hu.ngykristof.surprise.recommendationcore.data.RecommendationResult;
+import hu.ngykristof.surprise.recommendationcore.data.PersonalRecommendationEntity;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.repository.query.Param;
@@ -22,7 +22,7 @@ interface RecommendationRepository : Neo4jRepository<Movies, Long> {
                     LIMIT 10
     """
     )
-    fun hybridRecommendation(@Param("userId") userId: String): List<RecommendationResult>
+    fun hybridRecommendation(@Param("userId") userId: String): List<PersonalRecommendationEntity>
 
 
     @Query("""
@@ -35,7 +35,7 @@ interface RecommendationRepository : Neo4jRepository<Movies, Long> {
         LIMIT 10
     """
     )
-    fun contentBasedRecommendation(@Param("userId") userId: String): List<RecommendationResult>
+    fun contentBasedRecommendation(@Param("userId") userId: String): List<PersonalRecommendationEntity>
 
     @Query("""
          MATCH p=(u:Users)-[r:USER_SIMILAR]->(other:Users)-[ow:WATCHED]->(m:Movies)
@@ -47,7 +47,7 @@ interface RecommendationRepository : Neo4jRepository<Movies, Long> {
          LIMIT 10
     """
     )
-    fun userBasedRecommendation(@Param("userId") userId: String): List<RecommendationResult>
+    fun userBasedRecommendation(@Param("userId") userId: String): List<PersonalRecommendationEntity>
 
 
     @Query("""

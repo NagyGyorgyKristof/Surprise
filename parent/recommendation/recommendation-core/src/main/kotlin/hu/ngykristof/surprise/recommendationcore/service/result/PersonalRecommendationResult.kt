@@ -1,6 +1,6 @@
 package hu.ngykristof.surprise.recommendationcore.service.result
 
-import hu.ngykristof.surprise.recommendationapi.dto.PersonalRecommendation
+import hu.ngykristof.surprise.recommendationapi.dto.PersonalRecommendationResponse
 
 class PersonalRecommendationResult(
         var title: String = "",
@@ -8,8 +8,8 @@ class PersonalRecommendationResult(
         var movieId: Int = 0
 )
 
-fun PersonalRecommendationResult.toResponse(): PersonalRecommendation {
-    return PersonalRecommendation(
+fun PersonalRecommendationResult.toResponse(): PersonalRecommendationResponse {
+    return PersonalRecommendationResponse(
             title = this.title,
             ratingMean = this.ratingMean,
             movieId = this.movieId

@@ -1,6 +1,6 @@
 package hu.ngykristof.surprise.recommendationcore.controller
 
-import hu.ngykristof.surprise.recommendationapi.dto.PersonalRecommendation
+import hu.ngykristof.surprise.recommendationapi.dto.PersonalRecommendationResponse
 import hu.ngykristof.surprise.recommendationapi.dto.CreateRatingRequest
 import hu.ngykristof.surprise.recommendationcore.controller.mapping.toPersonalRecommendation
 import hu.ngykristof.surprise.recommendationcore.repository.RecommendationRepository
@@ -14,19 +14,19 @@ class RecommendationController(
 
 
     @GetMapping("/user-based/{userId}")
-    fun getUserBasedRecommendation(@PathVariable("userId") userId: String): List<PersonalRecommendation> {
+    fun getUserBasedRecommendation(@PathVariable("userId") userId: String): List<PersonalRecommendationResponse> {
         val result = recommendationRepository.userBasedRecommendation(userId)
         return result.map { it.toPersonalRecommendation() }
     }
 
     @GetMapping("/content-based/{userId}")
-    fun getContentBasedRecommendation(@PathVariable("userId") userId: String): List<PersonalRecommendation> {
+    fun getContentBasedRecommendation(@PathVariable("userId") userId: String): List<PersonalRecommendationResponse> {
         val result = recommendationRepository.contentBasedRecommendation(userId)
         return result.map { it.toPersonalRecommendation() }
     }
 
     @GetMapping("/hybrid/{userId}")
-    fun getHybridRecommendation(@PathVariable("userId") userId: String): List<PersonalRecommendation> {
+    fun getHybridRecommendation(@PathVariable("userId") userId: String): List<PersonalRecommendationResponse> {
         val result = recommendationRepository.hybridRecommendation(userId)
         return result.map { it.toPersonalRecommendation() }
     }

@@ -1,14 +1,10 @@
 package hu.ngykristof.surprise.recommendationcore.service
 
-import hu.ngykristof.surprise.recommendationapi.dto.CreateRatingRequest
-import hu.ngykristof.surprise.recommendationcore.controller.mapping.toPersonalRecommendation
 import hu.ngykristof.surprise.recommendationcore.data.toResult
 import hu.ngykristof.surprise.recommendationcore.repository.RecommendationRepository
 import hu.ngykristof.surprise.recommendationcore.service.result.PersonalRecommendationResult
-import hu.ngykristof.surprise.recommendationcore.service.result.message.CreateRatingMessage
+import hu.ngykristof.surprise.recommendationcore.service.message.CreateRatingMessage
 import org.springframework.stereotype.Service
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestBody
 
 
 @Service

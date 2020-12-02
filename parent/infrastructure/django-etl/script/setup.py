@@ -3,7 +3,7 @@
 
 # In[1]:
 
-from comon import *
+from common import *
 import numpy as np
 from py2neo import Graph
 import os
@@ -19,30 +19,32 @@ print('==> Python: Startup ETL flow was started')
 # In[3]:
 
 print('==> Getting movies_metadata.csv')
-movies="/initdata/movies_metadata.csv"
+movies="/code/django-etl/initdata/movies_metadata.csv"
 md =pd.read_csv(movies)
 
 md = md.loc[md['id'].str.isalnum()]
 md['id']=md['id'].astype('int')
-print('==> movies_metadata.csv has been arrived.')
+print('==> movies_metadata.csv has arrived.')
 
 
 
 # In[4]:
 
 print('==> Getting links_small.csv')
-link_smalll="/initdata/links_small.csv"
+link_small="/code/django-etl/initdata/links_small.csv"
 link_small= pd.read_csv(link_small)
 links_small = link_small[link_small['tmdbId'].notnull()]['tmdbId'].astype('int')
 print('links_small.csv has been arrived.')
 
 
+md = md[md['id'].isin(links_small)]
+
 # In[5]:
 
 print('==> Getting ratings.csv')
-ratings="/initdata/ratings.csv"
+ratings="/code/django-etl/initdata/ratings.csv"
 ratings= pd.read_csv(ratings)
-print('==> ratings.csv has been arrived.')
+print('==> ratings.csv has arrived.')
 
 # In[7]:
 
@@ -106,14 +108,14 @@ movies_genres =get_movie_genres_df(md)
 ################################   Keywords, Credit ###########################################
 
 print('==> Getting keywords.csv')
-keywords="/initdata/keywords.csv"
+keywords="/code/django-etl/initdata/keywords.csv"
 keywords= pd.read_csv(keywords)
-print('==> keywords.csv has benn arrived')
+print('==> keywords.csv has arrived')
 
 print('==> Getting credits.csv')
-credits="/initdata/credits.csv"
+credits="/code/django-etl/initdata/credits.csv"
 credits= pd.read_csv(credits)
-print('==> credits.csv has benn arrived')
+print('==> credits.csv has arrived')
 
 
 
@@ -151,7 +153,7 @@ md = md.drop(['genres','vote_average','vote_count','cast','crew','keywords','cas
 
 #/////////////////////////////////////////NEO4J IMPORT////////////////////////////////////////////////////////////////
 
-print('==> NEO4J import has benn started')
+print('==> NEO4J import has been started')
 def execute_query(statement):
     tx = graph.begin(autocommit=True)
     tx.evaluate(statement)
@@ -161,7 +163,7 @@ def execute_query(statement):
 # In[32]:
 
 
-genres_df.to_csv('/import/genres.csv', sep='|', header=True, index=False)
+genres_df.to_csv('/code/django-etl/import/genres.csv', sep='|', header=True, index=False)
 
 genres_import_statement = """
 USING PERIODIC COMMIT
@@ -176,7 +178,7 @@ execute_query(genres_import_statement)
 # In[33]:
 
 
-md.to_csv('/import/movies.csv', sep='|', header=True, index=False)
+md.to_csv('/code/django-etl/import/movies.csv', sep='|', header=True, index=False)
 
 movie_import_statement = """
 //movies upload
@@ -193,7 +195,7 @@ execute_query(movie_import_statement)
 # In[34]:
 
 
-users_df.to_csv('/import/users.csv', sep='|', header=True, index=False)
+users_df.to_csv('/code/django-etl/import/users.csv', sep='|', header=True, index=False)
 
 user_import_statement = """
 USING PERIODIC COMMIT
@@ -207,33 +209,24 @@ execute_query(user_import_statement)
 
 # In[35]:
 
-drop_movie_index_statement= """
-DROP INDEX ON :Movies(movieId)
-"""
 movie_index_statement = """
-CREATE INDEX FOR (n:Movies) ON (n.movieId);
+CREATE INDEX movieIndex IF NOT EXISTS FOR (m:Movies) ON (m.movieId)
 """
-
-execute_query(drop_movie_index_statement)
 execute_query(movie_index_statement)
 
 
 # In[ ]:
 
-drop_user_index_statement= """
-DROP INDEX ON :Users(userId)
-"""
 user_index_statement = """
-CREATE INDEX FOR (n:Users) ON (n.userId);
+CREATE INDEX userIndex IF NOT EXISTS FOR (u:Users) ON (u.userId)
 """
-execute_query(drop_user_index_statement)
 execute_query(user_index_statement)
 
 
 # In[36]:
 
 
-users_movies_df.to_csv('/import/users_movies.csv', sep='|', header=True, index=False)
+users_movies_df.to_csv('/code/django-etl/import/users_movies.csv', sep='|', header=True, index=False)
 
 user_import_statement = """
 USING PERIODIC COMMIT
@@ -250,7 +243,7 @@ execute_query(user_import_statement)
 # In[37]:
 
 
-users_movies_df.to_csv('/import/users_movies.csv', sep='|', header=True, index=False)
+users_movies_df.to_csv('/code/django-etl/import/users_movies.csv', sep='|', header=True, index=False)
 
 user_movies_import_statement = """
 USING PERIODIC COMMIT
@@ -267,7 +260,7 @@ execute_query(user_movies_import_statement)
 # In[38]:
 
 
-movies_genres.to_csv('/import/movies_genres.csv', sep='|', header=True, index=False)
+movies_genres.to_csv('/code/django-etl/import/movies_genres.csv', sep='|', header=True, index=False)
 
 movies_genres_import_statement = """
 USING PERIODIC COMMIT
@@ -284,7 +277,7 @@ execute_query(movies_genres_import_statement)
 # In[39]:
 
 
-movies_similarity.to_csv('/import/movies_similarity.csv', sep='|', header=True, index=False)
+movies_similarity.to_csv('/code/django-etl/import/movies_similarity.csv', sep='|', header=True, index=False)
 
 movies_similarity_statement = """
 USING PERIODIC COMMIT

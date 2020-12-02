@@ -4,6 +4,7 @@ import pandas as pd
 from ast import literal_eval
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.metrics.pairwise import linear_kernel, cosine_similarity
+import numpy as np
 
 
 # Use IMDB recommendation for calculate the weighted average vote.

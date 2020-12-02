@@ -21,6 +21,8 @@ services:
     volumes:
       - .:/code
       - ./script:/script
+      - ${INITIAL_DATA}:/code/django-etl/initdata
+      - ${NEO4j_IMPORT}:/code/django-etl/import
     ports:
       - 8000:8000
 

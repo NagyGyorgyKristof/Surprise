@@ -14,7 +14,7 @@ interface RecommendationRepository : Neo4jRepository<Movies, Long> {
 
     @Query("""
         MATCH p=(u:Users)-[r:USER_SIMILAR]->(other:Users)-[ow:WATCHED]->(m:Movies)<-[ms:MOVIE_SIMILAR]-(watchedMovie:Movies)<-[wmw:WATCHED]-(u)
-                    WHERE u.userId=~${'$'}{userId} AND (NOT (u)-[:WATCHED]->(m))
+                    WHERE u.userId=~${'$'}userId AND (NOT (u)-[:WATCHED]->(m))
                     WITH toFloat(m.rating_mean) AS RatingMean,u,m,toFloat(ms.relevance) AS UserSimilarity,toFloat(ow.rating) AS OtherUserRating,toFloat(wmw.rating) AS UserPersonalRating,toFloat(r.similarity) AS MovieSimilarity
                     WITH (RatingMean + 10*UserSimilarity + 10*MovieSimilarity + OtherUserRating + UserPersonalRating)/50 AS RecommendationScore,u,m,RatingMean,UserSimilarity
                     ORDER BY RecommendationScore DESC
@@ -27,7 +27,7 @@ interface RecommendationRepository : Neo4jRepository<Movies, Long> {
 
     @Query("""
         MATCH (m:Movies)<-[ms:MOVIE_SIMILAR]-(watchedMovie:Movies)<-[wmw:WATCHED]-(u)
-        WHERE u.userId=~${'$'}{userId} AND (NOT (u)-[:WATCHED]->(m))
+        WHERE u.userId=~${'$'}userId AND (NOT (u)-[:WATCHED]->(m))
         WITH toFloat(m.rating_mean) AS RatingMean,u,m,toFloat(ms.relevance) AS MovieSimilarity,toFloat(wmw.rating) AS UserPersonalRating, watchedMovie
         WITH (10*MovieSimilarity + UserPersonalRating + RatingMean)/30 AS RecommendationScore, u,m,RatingMean,MovieSimilarity,UserPersonalRating,watchedMovie
         ORDER BY RecommendationScore DESC
@@ -39,7 +39,7 @@ interface RecommendationRepository : Neo4jRepository<Movies, Long> {
 
     @Query("""
          MATCH p=(u:Users)-[r:USER_SIMILAR]->(other:Users)-[ow:WATCHED]->(m:Movies)
-         WHERE u.userId=~${'$'}{userId} AND (NOT (u)-[:WATCHED]->(m))
+         WHERE u.userId=~${'$'}userId AND (NOT (u)-[:WATCHED]->(m))
          WITH toFloat(m.rating_mean) AS RatingMean,u,m,r.similarity AS UserSimilarity,  toFloat(ow.rating) AS UserPersonalRating
          WITH (10*UserSimilarity + UserPersonalRating + RatingMean)/30 AS RecommendationScore,m,RatingMean
          ORDER BY RecommendationScore DESC
@@ -51,9 +51,9 @@ interface RecommendationRepository : Neo4jRepository<Movies, Long> {
 
 
     @Query("""
-        MATCH (user:Users {userId: ${'$'}{userId}})
-        MATCH (movie:Movies {movieId: ${'$'}{movieId}})
-        MERGE (user)-[:WATCHED {rating: ${'$'}{rating}}]->(movie);
+        MATCH (user:Users {userId: ${'$'}userId})
+        MATCH (movie:Movies {movieId: ${'$'}movieId})
+        MERGE (user)-[:WATCHED {rating: ${'$'}rating}]->(movie);
     """
     )
     fun createRating(userId: String, movieId: String, rating: Double)
